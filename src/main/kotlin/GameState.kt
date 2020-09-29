@@ -5,13 +5,14 @@ import java.util.*
 import kotlin.collections.HashMap
 
 const val gameStateFileName = "game-state.properties"
+const val devPath = "src/main/resources/"
 
 private val LOG = KotlinLogging.logger {}
 private val props: Properties = Properties()
 
-fun loadGameState(): Boolean {
+fun loadGameState(devMode: Boolean = false): Boolean {
 	try {
-		val gameStateProps = File(gameStateFileName)
+		val gameStateProps = File((if (devMode) devPath else "") + gameStateFileName)
 		if (!gameStateProps.exists()) {
 			return false
 		}

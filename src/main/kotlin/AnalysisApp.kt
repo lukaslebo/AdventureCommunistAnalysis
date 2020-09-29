@@ -1,19 +1,27 @@
 import mu.KotlinLogging
+import java.io.File
 import java.math.BigDecimal
 import kotlin.system.exitProcess
 
 private val LOG = KotlinLogging.logger {}
 
-fun main() {
-	val success = loadGameState()
+fun main(args: Array<String>) {
+	val devMode = args.contains("dev")
+	val success = loadGameState(devMode)
+
+	val sb = StringBuilder()
 	if (success) {
-		val sb = StringBuilder()
 		Industry.values().forEach { sb.append(analyzeIndustry(it)) }
 		sb.append(analyzeTradeResearchers())
 		LOG.info { sb }
 	} else {
 		LOG.error { "Could not load game state from \"$gameStateFileName\"" }
 		exitProcess(1)
+	}
+
+	if (!devMode) {
+		val outFile = File("analysis.txt")
+		outFile.printWriter().apply { print(sb.toString()) }.flush()
 	}
 }
 

@@ -12,6 +12,7 @@ effective to upgrade in your current game state.
 * Run the application
     * Mac/Linux: `./run-analysis.sh`
     * Windows: `./run-analysis.bat`
+* View result in terminal output or in file `analysis.txt`
 
 # Game State
 Update the `game-state.properties` file according to your game state

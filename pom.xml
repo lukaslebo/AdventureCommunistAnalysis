@@ -6,7 +6,7 @@
 
 	<artifactId>adventure-communist-analysis</artifactId>
 	<groupId>ch.lebo</groupId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 
 	<properties>
