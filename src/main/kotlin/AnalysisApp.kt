@@ -5,10 +5,16 @@ import kotlin.system.exitProcess
 private val LOG = KotlinLogging.logger {}
 
 fun main() {
-	val sb = StringBuilder()
-	Industry.values().forEach { sb.append(analyzeIndustry(it)) }
-	sb.append(analyzeTradeResearchers())
-	LOG.info { sb }
+	val success = loadGameState()
+	if (success) {
+		val sb = StringBuilder()
+		Industry.values().forEach { sb.append(analyzeIndustry(it)) }
+		sb.append(analyzeTradeResearchers())
+		LOG.info { sb }
+	} else {
+		LOG.error { "Could not load game state from \"$gameStateFileName\"" }
+		exitProcess(1)
+	}
 }
 
 fun analyzeIndustry(industry: Industry): StringBuilder {
