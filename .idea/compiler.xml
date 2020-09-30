@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="adventure-communist-analysis" />
         <module name="mainModule" />
         <module name="adventure-communist-calculator" />
       </profile>
