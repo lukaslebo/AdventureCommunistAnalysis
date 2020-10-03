@@ -1,0 +1,19 @@
+<div [class]="blockName" fxLayout="row" [fxLayoutGap]="dimensions(8)" fxLayoutAlign="start baseline">
+	<div [class]="styles('name')">{{ researcher.researcherName }}</div>
+	<div [class]="styles('industry')">{{ researcher.industry }}</div>
+	<div [class]="styles('modifier')">{{ researcher.modifier }}</div>
+	<mat-form-field [class]="styles('current-level')">
+		<input matInput [formControl]="formControls.currentLevel"/>
+		<div matSuffix fxLayout="row">
+			<mat-icon (click)="lvlUp()">arrow_circle_up</mat-icon>
+			<mat-icon (click)="lvlDown()">arrow_circle_down</mat-icon>
+		</div>
+	</mat-form-field>
+	<mat-form-field [class]="styles('available-cards')">
+		<input matInput [formControl]="formControls.availableCards"/>
+		<div matSuffix fxFlexAlign="center center" fxLayout="row" fxLayoutAlign="start center">
+			<mat-icon (click)="cardsUp()">arrow_circle_up</mat-icon>
+			<mat-icon (click)="cardsDown()">arrow_circle_down</mat-icon>
+		</div>
+	</mat-form-field>
+</div>

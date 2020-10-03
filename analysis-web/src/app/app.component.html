@@ -1,9 +1,42 @@
 <div
 		[class]="blockName"
 		fxLayout="column"
-		[fxLayoutGap]="dimensions(8)"
-		fxLayoutAlign="center center"
+		[fxLayoutGap]="dimensions(32)"
+		fxLayoutAlign="start center"
 >
-	<div>Hello</div>
-	<div>World</div>
+	<div fxLayout="column"
+		 fxLayoutAlign="start center"
+		 [class]="styles('header')">
+		<div [class]="styles('header-title')">Adventure Communists Researcher Analysis</div>
+		<div [class]="styles('description')">description</div>
+	</div>
+	<div [class]="styles('rank-section')" fxLayout="row" fxLayoutAlign="center baseline" [fxLayoutGap]="dimensions(8)">
+		<div>Your Rank</div>
+		<mat-form-field appearance="outline" [class]="styles('rank-field')">
+			<input matInput [formControl]="rankControl"/>
+			<div matSuffix fxFlexAlign="center center" fxLayout="row" fxLayoutAlign="start center">
+				<mat-icon (click)="rankUp()">arrow_circle_up</mat-icon>
+				<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
+			</div>
+		</mat-form-field>
+	</div>
+
+	<div *ngFor="let section of sections" fxLayout="column" [class]="styles('section')">
+		<div [class]="styles('section-title')">{{ section }} Analysis</div>
+		<div
+				fxLayout="column"
+				[fxLayoutGap]="dimensions(8)"
+				fxLayoutAlign="center center"
+		>
+			<researcher-analysis-row
+					*ngFor="
+					let researcher of researcherBySection[section];
+					trackBy: trackByResearcherId
+				"
+					[researcher]="researcher"
+					[researcherState]="(researcherStateMap$ | async)[researcher.id]"
+					(updated)="updateResearcherState($event)"
+			></researcher-analysis-row>
+		</div>
+	</div>
 </div>

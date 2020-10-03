@@ -1,0 +1,36 @@
+@import 'theme/rem';
+
+.researcher-analysis-row {
+	height: 32 * $dim-1px;
+
+	&__name {
+		width: 184 * $dim-1px;
+	}
+
+	&__industry,
+	&__modifier {
+		width: 72 * $dim-1px;
+	}
+
+	&__current-level,
+	&__available-cards {
+		width: 96 * $dim-1px;
+
+		::ng-deep .mat-form-field-infix {
+			padding: 8 * $dim-1px 0;
+			border-top-width: 4 * $dim-1px;
+		}
+
+		[matSuffix] {
+			transform: translateY(1 * $dim-1px);
+		}
+
+		mat-icon {
+			cursor: pointer;
+		}
+	}
+
+	&__available-cards {
+		width: 120 * $dim-1px;
+	}
+}
