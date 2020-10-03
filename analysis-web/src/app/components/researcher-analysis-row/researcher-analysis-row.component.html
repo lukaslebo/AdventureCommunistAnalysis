@@ -1,7 +1,20 @@
-<div [class]="blockName" fxLayout="row" [fxLayoutGap]="dimensions(8)" fxLayoutAlign="start baseline">
+<div
+		[class]="blockName"
+		fxLayout="row"
+		[fxLayoutGap]="dimensions(8)"
+		fxLayoutAlign="start baseline"
+>
 	<div [class]="styles('name')">{{ researcher.researcherName }}</div>
-	<div [class]="styles('industry')">{{ researcher.industry }}</div>
-	<div [class]="styles('modifier')">{{ researcher.modifier }}</div>
+	<div [class]="styles('industry')">
+		<img
+				[src]="'/assets/icons/' + researcher.industry.toLowerCase() + '.png'"
+		/>
+	</div>
+	<div [class]="styles('modifier')">
+		<img
+				[src]="'/assets/icons/' + researcher.modifier.toLowerCase() + '.png'"
+		/>
+	</div>
 	<mat-form-field [class]="styles('current-level')">
 		<input matInput [formControl]="formControls.currentLevel" type="number"/>
 		<div matSuffix fxLayout="row">
@@ -11,12 +24,21 @@
 	</mat-form-field>
 	<mat-form-field [class]="styles('available-cards')">
 		<input matInput [formControl]="formControls.availableCards" type="number"/>
-		<div matSuffix fxFlexAlign="center center" fxLayout="row" fxLayoutAlign="start center">
+		<div
+				matSuffix
+				fxFlexAlign="center center"
+				fxLayout="row"
+				fxLayoutAlign="start center"
+		>
 			<mat-icon (click)="cardsUp()">arrow_circle_up</mat-icon>
 			<mat-icon (click)="cardsDown()">arrow_circle_down</mat-icon>
 		</div>
 	</mat-form-field>
-	<div>Boost: {{ analysis?.boost }}</div>
-	<div>Cost: {{ analysis?.upgradeCost }} + {{ analysis?.upgradeCardCost }}</div>
-	<div>Boost per 1k Science: {{ analysis?.boostPer1kScience }}</div>
+	<div [class]="styles('boost')">Boost: {{ format(analysis?.boost) }}</div>
+	<div [class]="styles('cost')">
+		{{ getCost() }}
+	</div>
+	<div [class]="styles('ratio')">
+		Boost per 1k Science: {{ format(analysis?.boostPer1kScience) }}
+	</div>
 </div>

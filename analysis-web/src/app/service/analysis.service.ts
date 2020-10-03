@@ -207,7 +207,7 @@ export class AnalysisService {
 			.minus(chance)
 			.plus(nextChance.times(multiplier));
 		const boost = nextPower.div(power);
-		return new Decimal(Math.log2(+boost));
+		return boost.log(2);
 	}
 
 	private getBonusMultiplierForIndustry(

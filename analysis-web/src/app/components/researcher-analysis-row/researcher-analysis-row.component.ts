@@ -8,6 +8,8 @@ import {initialResearcherState} from '../../reducer/analysis.reducer';
 import {takeUntil} from 'rxjs/operators';
 import {UpdateResearcherProps} from '../../reducer/analysis.actions';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import {Decimal} from 'decimal.js';
+import {toHumanReadable} from "../../util/human-readable-numbers";
 
 @Component({
 	selector: 'researcher-analysis-row',
@@ -90,6 +92,17 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 			next = null;
 		}
 		this.formControls.availableCards.setValue(next);
+	}
+
+	format(decimal: Decimal) {
+		return toHumanReadable(decimal);
+	}
+
+	getCost() {
+		let cost = "Cost: " + this.format(this.analysis?.upgradeCost);
+		if (this.analysis?.upgradeCardCost.gt(0))
+			cost += " + " + this.format(this.analysis?.upgradeCardCost)
+		return cost;
 	}
 
 	ngOnDestroy() {

@@ -2,6 +2,7 @@
 
 .researcher-analysis-row {
 	height: 32 * $dim-1px;
+	width: 1100 * $dim-1px;
 
 	&__name {
 		width: 184 * $dim-1px;
@@ -9,7 +10,7 @@
 
 	&__industry,
 	&__modifier {
-		width: 72 * $dim-1px;
+		width: 24 * $dim-1px;
 	}
 
 	&__current-level,
@@ -32,5 +33,16 @@
 
 	&__available-cards {
 		width: 120 * $dim-1px;
+	}
+
+	&__boost {
+		width: 96 * $dim-1px;
+	}
+
+	&__cost {
+		width: 120 * $dim-1px;
+	}
+
+	&__ratio {
 	}
 }
