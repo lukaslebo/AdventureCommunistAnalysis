@@ -16,6 +16,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {EffectsModule} from "@ngrx/effects";
 import {AnalysisEffect} from "./effects/analysis.effect";
 import {AnalysisService} from "./service/analysis.service";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
 	declarations: [AppComponent, ResearcherAnalysisRowComponent],
@@ -26,6 +27,7 @@ import {AnalysisService} from "./service/analysis.service";
 		FlexModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatCheckboxModule,
 		MatIconModule,
 		ReactiveFormsModule,
 		StoreModule.forRoot(analysisReducerMap),

@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {BEM} from './util/bem';
 import {REM} from './util/rem';
 import {select, Store} from '@ngrx/store';
@@ -25,12 +25,16 @@ export class AppComponent implements OnDestroy {
 	readonly rank$: Observable<number>;
 	readonly analysisMap$: Observable<AnalysisMap>;
 	readonly rankControl = new FormControl(null, {updateOn: 'blur'});
+	readonly sortControl = new FormControl(false);
 	readonly destroyed$ = new Subject<void>();
 
 	readonly sections = sections;
 	readonly researcherBySection: Record<Section, Researcher[]>;
 
-	constructor(private readonly store: Store) {
+	constructor(
+		private readonly store: Store,
+		private readonly cdRef: ChangeDetectorRef
+	) {
 		this.store.dispatch(loadCookies());
 
 		// prettier-ignore
@@ -56,6 +60,10 @@ export class AppComponent implements OnDestroy {
 			.subscribe((rank) =>
 				this.rankControl.patchValue(rank, {emitEvent: false})
 			);
+
+		this.sortControl.valueChanges
+			.pipe(takeUntil(this.destroyed$))
+			.subscribe(() => this.cdRef.detectChanges());
 	}
 
 	updateResearcherState(props: UpdateResearcherProps) {
@@ -76,8 +84,10 @@ export class AppComponent implements OnDestroy {
 		this.rankControl.setValue(next);
 	}
 
-	sortByBoostCostRatio(researchers: Researcher[], analysisMap: AnalysisMap) {
-		return researchers.sort((a, b) => {
+	filterAndSort(researchers: Researcher[], analysisMap: AnalysisMap, rank: number) {
+		const res = researchers.filter(r => r.unlockedAtRank <= rank);
+		if (!this.sortControl.value) return res;
+		return res.sort((a, b) => {
 			const rA = new Decimal(analysisMap[a.id].boostPer1kScience);
 			const rB = new Decimal(analysisMap[b.id].boostPer1kScience);
 			return rA.comparedTo(rB) * -1;

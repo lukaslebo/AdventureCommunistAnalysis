@@ -20,6 +20,18 @@
 	&__section-title {
 		font-weight: 700;
 		font-size: 16 * $dim-1px;
+		width: 260 * $dim-1px;
+	}
+
+	&__section-header-lvl {
+		width: 100 * $dim-1px;
+	}
+
+	&__section-header-cards {
+	}
+
+	&__sort-checkbox {
+		margin-left: 24 * $dim-1px;
 	}
 
 	&__rank-field {

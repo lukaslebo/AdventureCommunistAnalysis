@@ -3,7 +3,14 @@
 		<div [class]="styles('header-title')">
 			Adventure Communists Researcher Analysis
 		</div>
-		<div [class]="styles('description')">description</div>
+		<div [class]="styles('description')">
+			<p>Enter your rank below and set the levels of your researchers.</p>
+			<p>
+				If you like you can set the available cards for some of your
+				researchers, so the cost of buying the cards for science can be factored
+				in.
+			</p>
+		</div>
 	</div>
 	<div
 			[class]="styles('rank-section')"
@@ -19,6 +26,10 @@
 				<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
 			</div>
 		</mat-form-field>
+		<mat-checkbox [class]="styles('sort-checkbox')" [formControl]="sortControl"
+		>Sort by most valuable Researchers
+		</mat-checkbox
+		>
 	</div>
 
 	<div
@@ -26,19 +37,23 @@
 			fxLayout="column"
 			[class]="styles('section')"
 	>
-		<div [class]="styles('section-title')">{{ section }} Analysis</div>
+		<div fxLayout="row">
+			<div [class]="styles('section-title')">{{ section }} Analysis</div>
+			<div [class]="styles('section-header-lvl')">Level</div>
+			<div [class]="styles('section-header-cards')">Available Cards</div>
+		</div>
 		<div fxLayout="column" [fxLayoutGap]="dimensions(8)">
 			<div
 					*ngFor="
-					let researcher of sortByBoostCostRatio(
+					let researcher of filterAndSort(
 						researcherBySection[section],
-						analysisMap$ | async
+						analysisMap$ | async,
+						rank$ | async
 					);
 					trackBy: trackByResearcherId
-				">
-
+				"
+			>
 				<researcher-analysis-row
-						*ngIf="researcher.unlockedAtRank <= (rank$ | async)"
 						[researcher]="researcher"
 						[researcherState]="(researcherStateMap$ | async)[researcher.id]"
 						[analysis]="(analysisMap$ | async)[researcher.id]"
