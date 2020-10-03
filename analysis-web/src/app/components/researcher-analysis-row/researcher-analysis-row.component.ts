@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
 import {BEM} from '../../util/bem';
 import {REM} from '../../util/rem';
-import {Researcher, ResearcherState} from '../../reducer/analysis.state';
+import {Analysis, Researcher, ResearcherState} from '../../reducer/analysis.state';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {initialResearcherState} from '../../reducer/analysis.reducer';
@@ -40,6 +40,9 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	researcherState$ = new BehaviorSubject<ResearcherState>(
 		initialResearcherState
 	);
+
+	@Input()
+	analysis: Analysis;
 
 	@Output()
 	updated = new EventEmitter<UpdateResearcherProps>();

@@ -38,7 +38,10 @@ const analysisInitialState = Researchers.allResearchers.reduce(
 );
 export const analysisReducer = createReducer(
 	analysisInitialState,
-	on(updateAnalysisMap, (_, {map}) => map)
+	on(updateAnalysisMap, (state, {analysisMap}) => ({
+		...state,
+		...analysisMap
+	}))
 );
 
 export const analysisReducerMap: ActionReducerMap<AnalysisRootState> = {

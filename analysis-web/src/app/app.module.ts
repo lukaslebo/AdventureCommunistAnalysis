@@ -13,6 +13,9 @@ import {ResearcherAnalysisRowComponent} from './components/researcher-analysis-r
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from "@angular/material/icon";
+import {EffectsModule} from "@ngrx/effects";
+import {AnalysisEffect} from "./effects/analysis.effect";
+import {AnalysisService} from "./service/analysis.service";
 
 @NgModule({
 	declarations: [AppComponent, ResearcherAnalysisRowComponent],
@@ -29,9 +32,10 @@ import {MatIconModule} from "@angular/material/icon";
 		StoreDevtoolsModule.instrument({
 			maxAge: 25,
 			logOnly: environment.production
-		})
+		}),
+		EffectsModule.forRoot([AnalysisEffect])
 	],
-	providers: [],
+	providers: [AnalysisService],
 	bootstrap: [AppComponent]
 })
 export class AppModule {

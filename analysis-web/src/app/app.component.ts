@@ -2,9 +2,9 @@ import {Component, OnDestroy} from '@angular/core';
 import {BEM} from './util/bem';
 import {REM} from './util/rem';
 import {select, Store} from '@ngrx/store';
-import {selectCurrentRank, selectResearcher} from './reducer/analysis.reducer';
+import {selectAnalysis, selectCurrentRank, selectResearcher} from './reducer/analysis.reducer';
 import {Observable, Subject} from 'rxjs';
-import {Researcher, ResearcherStateMap, Section} from './reducer/analysis.state';
+import {AnalysisMap, Researcher, ResearcherStateMap, Section, sections} from './reducer/analysis.state';
 import {Researchers} from './reducer/researcher.state';
 import {updateRank, updateResearcher, UpdateResearcherProps} from './reducer/analysis.actions';
 import {FormControl} from '@angular/forms';
@@ -20,48 +20,30 @@ export class AppComponent implements OnDestroy {
 	readonly styles = BEM(this.blockName);
 	readonly dimensions = REM();
 
-	readonly Researchers = Researchers;
-	researcherStateMap$: Observable<ResearcherStateMap>;
-	rank$: Observable<number>;
-	readonly rankControl = new FormControl(null);
+	readonly researcherStateMap$: Observable<ResearcherStateMap>;
+	readonly rank$: Observable<number>;
+	readonly analysisMap$: Observable<AnalysisMap>;
+	readonly rankControl = new FormControl(null, {updateOn: 'blur'});
 	readonly destroyed$ = new Subject<void>();
 
-	readonly sections = [
-		'Potato',
-		'Land',
-		'Ore',
-		'Military',
-		'Placebo',
-		'Supreme',
-		'Trade'
-	];
+	readonly sections = sections;
 	readonly researcherBySection: Record<Section, Researcher[]>;
 
 	constructor(private readonly store: Store) {
+		// prettier-ignore
 		this.researcherBySection = {
-			Potato: Researchers.allResearchers.filter(
-				(r) => r.industry === 'Potato' && r.modifier !== 'Trade'
-			),
-			Land: Researchers.allResearchers.filter(
-				(r) => r.industry === 'Land' && r.modifier !== 'Trade'
-			),
-			Ore: Researchers.allResearchers.filter(
-				(r) => r.industry === 'Ore' && r.modifier !== 'Trade'
-			),
-			Military: Researchers.allResearchers.filter(
-				(r) => r.industry === 'Military' && r.modifier !== 'Trade'
-			),
-			Placebo: Researchers.allResearchers.filter(
-				(r) => r.industry === 'Placebo' && r.modifier !== 'Trade'
-			),
-			Supreme: Researchers.allResearchers.filter(
-				(r) => r.rarity === 'Supreme' && r.modifier !== 'Trade'
-			),
+			Potato: Researchers.allResearchers.filter((r) => r.industry === 'Potato' && r.modifier !== 'Trade'),
+			Land: Researchers.allResearchers.filter((r) => r.industry === 'Land' && r.modifier !== 'Trade'),
+			Ore: Researchers.allResearchers.filter((r) => r.industry === 'Ore' && r.modifier !== 'Trade'),
+			Military: Researchers.allResearchers.filter((r) => r.industry === 'Military' && r.modifier !== 'Trade'),
+			Placebo: Researchers.allResearchers.filter((r) => r.industry === 'Placebo' && r.modifier !== 'Trade'),
+			Supreme: Researchers.allResearchers.filter((r) => r.rarity === 'Supreme' && r.modifier !== 'Trade'),
 			Trade: Researchers.allResearchers.filter((r) => r.modifier === 'Trade')
 		};
 
 		this.researcherStateMap$ = store.pipe(select(selectResearcher));
 		this.rank$ = store.pipe(select(selectCurrentRank));
+		this.analysisMap$ = store.pipe(select(selectAnalysis));
 
 		this.rankControl.valueChanges
 			.pipe(takeUntil(this.destroyed$))

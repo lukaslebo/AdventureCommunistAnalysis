@@ -91,7 +91,7 @@ private fun getTradeBoost(researcher: Researcher): BigDecimal {
 			val industryTradeExponent = industry.getIndustryPower().log(5_000, 6)
 			TWO.pow(lvl) * TWO.pow(industryTradeExponent.toInt()) * TWO.pow(supremeTradeLvl) * industry.tradeMultiplier
 		}
-		.fold(BigDecimal.ONE) { acc, p -> acc + p }
+		.fold(BigDecimal.ZERO) { acc, p -> acc + p }
 
 	if (researcher.rarity == Supreme) supremeTradeLvl++
 
@@ -103,7 +103,7 @@ private fun getTradeBoost(researcher: Researcher): BigDecimal {
 			val industryTradeExponent = industry.getIndustryPower().log(5_000, 6)
 			TWO.pow(lvl) * TWO.pow(industryTradeExponent.toInt()) * TWO.pow(supremeTradeLvl) * industry.tradeMultiplier
 		}
-		.fold(BigDecimal.ONE) { acc, p -> acc + p }
+		.fold(BigDecimal.ZERO) { acc, p -> acc + p }
 
 	return boostedTradePower.divide(currentTradePower, 2, RoundingMode.HALF_UP).stripTrailingZeros()
 }
@@ -232,25 +232,37 @@ private fun Industry.getChanceForIndustry(simulatePlusOneLvl: Boolean = false) =
 		it.key.modifier == Chance && (it.key.industry == this || it.key.industry == All)
 	}
 		.mapNotNull {
-			if (simulatePlusOneLvl && (it.key.industry != All || this == All)) (it.value
+			val lvl = if (simulatePlusOneLvl && (it.key.industry != All || this == All)) (it.value
 				?: 0) + 1 else it.value
-		}
-		.filter { it > 0 }
-		.fold(BigDecimal("0.01")) { acc, lvl -> acc.add(getChanceFromLvl(lvl)) }
 
-private fun getChanceFromLvl(chanceLvl: Int) = when (chanceLvl) {
-	1 -> BigDecimal("0.05")
-	2 -> BigDecimal("0.0725")
-	3 -> BigDecimal("0.1")
-	4 -> BigDecimal("0.1325")
-	5 -> BigDecimal("0.17")
-	6 -> BigDecimal("0.2125")
-	7 -> BigDecimal("0.26")
-	8 -> BigDecimal("0.3125")
-	9 -> BigDecimal("0.37")
-	10 -> BigDecimal("0.4325")
-	11 -> BigDecimal("0.5")
-	else -> BigDecimal.ZERO
+			val chance = if (lvl != null) getChanceFromLvl(lvl, it.key.rarity == Supreme) else null
+			chance
+		}
+		.fold(BigDecimal("0.01")) { acc, chance -> acc + chance }
+
+private fun getChanceFromLvl(chanceLvl: Int, isSupreme: Boolean): BigDecimal = when (isSupreme) {
+	true -> when (chanceLvl) {
+		1 -> BigDecimal("0.08")
+		2 -> BigDecimal("0.13")
+		3 -> BigDecimal("0.19")
+		4 -> BigDecimal("0.26")
+		5 -> BigDecimal("0.34")
+		else -> BigDecimal.ZERO
+	}
+	false -> when (chanceLvl) {
+		1 -> BigDecimal("0.05")
+		2 -> BigDecimal("0.0725")
+		3 -> BigDecimal("0.1")
+		4 -> BigDecimal("0.1325")
+		5 -> BigDecimal("0.17")
+		6 -> BigDecimal("0.2125")
+		7 -> BigDecimal("0.26")
+		8 -> BigDecimal("0.3125")
+		9 -> BigDecimal("0.37")
+		10 -> BigDecimal("0.4325")
+		11 -> BigDecimal("0.5")
+		else -> BigDecimal.ZERO
+	}
 }
 
 private fun getDiscountFactorFromLvl(discountLvl: Int) = BigDecimal(10).pow(discountLvl)

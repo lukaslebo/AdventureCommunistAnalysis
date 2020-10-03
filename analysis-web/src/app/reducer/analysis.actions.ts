@@ -15,5 +15,5 @@ export const updateResearcher = createAction(
 
 export const updateAnalysisMap = createAction(
 	'updateAnalysisMap',
-	props<{ map: AnalysisMap }>()
+	props<{ analysisMap: AnalysisMap }>()
 );

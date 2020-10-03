@@ -1,4 +1,4 @@
-import Big from 'big.js';
+import {Decimal} from 'decimal.js';
 
 export interface AnalysisRootState {
 	currentRank: number;
@@ -16,6 +16,7 @@ export type Industry =
 	| 'Military'
 	| 'Placebo'
 	| 'All';
+
 export type Modifier =
 	| 'Speed'
 	| 'Power'
@@ -58,10 +59,9 @@ export interface ResearcherState {
 }
 
 export interface Analysis {
-	boost: Big;
-	boostPer1kScience: Big;
-	upgradeCost: Big;
-	upgradeCardCost: Big;
+	boost: Decimal;
+	boostPer1kScience: Decimal;
+	upgradeCost: Decimal;
+	upgradeCardCost: Decimal;
 	canUpgrade: boolean;
-	isAvailable: boolean;
 }

@@ -13,7 +13,7 @@
 	<div [class]="styles('rank-section')" fxLayout="row" fxLayoutAlign="center baseline" [fxLayoutGap]="dimensions(8)">
 		<div>Your Rank</div>
 		<mat-form-field appearance="outline" [class]="styles('rank-field')">
-			<input matInput [formControl]="rankControl"/>
+			<input matInput [formControl]="rankControl" type="number"/>
 			<div matSuffix fxFlexAlign="center center" fxLayout="row" fxLayoutAlign="start center">
 				<mat-icon (click)="rankUp()">arrow_circle_up</mat-icon>
 				<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
@@ -35,6 +35,7 @@
 				"
 					[researcher]="researcher"
 					[researcherState]="(researcherStateMap$ | async)[researcher.id]"
+					[analysis]="(analysisMap$ | async)[researcher.id]"
 					(updated)="updateResearcherState($event)"
 			></researcher-analysis-row>
 		</div>
