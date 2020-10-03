@@ -1,7 +1,10 @@
 import {createAction, props} from '@ngrx/store';
-import {AnalysisMap, ResearcherState} from './analysis.state';
+import {AnalysisMap, ResearcherState, ResearcherStateMap} from './analysis.state';
 
-export const updateRank = createAction('updateRank', props<{ rank: number }>());
+export const updateRank = createAction(
+	'[Analysis] updateRank',
+	props<{ rank: number }>()
+);
 
 export interface UpdateResearcherProps {
 	id: string;
@@ -9,11 +12,23 @@ export interface UpdateResearcherProps {
 }
 
 export const updateResearcher = createAction(
-	'updateResearcher',
+	'[Analysis] updateResearcher',
 	props<UpdateResearcherProps>()
 );
 
 export const updateAnalysisMap = createAction(
-	'updateAnalysisMap',
+	'[Analysis] updateAnalysisMap',
 	props<{ analysisMap: AnalysisMap }>()
 );
+
+export const loadCookies = createAction(
+	'[Analysis] loadStateFromCookie'
+);
+
+export const cookiesLoaded = createAction(
+	'[Analysis] cookiesLoaded',
+	props<{
+		rank: number,
+		researcherStateMap: ResearcherStateMap
+	}>()
+)

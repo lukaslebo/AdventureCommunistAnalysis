@@ -6,7 +6,7 @@ import {selectAnalysis, selectCurrentRank, selectResearcher} from './reducer/ana
 import {Observable, Subject} from 'rxjs';
 import {AnalysisMap, Researcher, ResearcherStateMap, Section, sections} from './reducer/analysis.state';
 import {Researchers} from './reducer/researcher.state';
-import {updateRank, updateResearcher, UpdateResearcherProps} from './reducer/analysis.actions';
+import {loadCookies, updateRank, updateResearcher, UpdateResearcherProps} from './reducer/analysis.actions';
 import {FormControl} from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
 
@@ -30,6 +30,8 @@ export class AppComponent implements OnDestroy {
 	readonly researcherBySection: Record<Section, Researcher[]>;
 
 	constructor(private readonly store: Store) {
+		this.store.dispatch(loadCookies());
+
 		// prettier-ignore
 		this.researcherBySection = {
 			Potato: Researchers.allResearchers.filter((r) => r.industry === 'Potato' && r.modifier !== 'Trade'),

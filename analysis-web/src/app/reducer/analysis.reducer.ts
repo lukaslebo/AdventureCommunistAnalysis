@@ -1,12 +1,13 @@
 import {ActionReducerMap, createFeatureSelector, createReducer, on} from '@ngrx/store';
 import {AnalysisMap, AnalysisRootState, ResearcherStateMap} from './analysis.state';
 import {Researchers} from './researcher.state';
-import {updateAnalysisMap, updateRank, updateResearcher} from './analysis.actions';
+import {cookiesLoaded, updateAnalysisMap, updateRank, updateResearcher} from './analysis.actions';
 import produce from 'immer';
 
-export const rankReducer = createReducer(
+const rankReducer = createReducer(
 	1,
-	on(updateRank, (_, {rank}) => rank)
+	on(updateRank, (_, {rank}) => rank),
+	on(cookiesLoaded, (state, {rank}) => rank ?? state)
 );
 
 export const initialResearcherState = {
@@ -20,13 +21,17 @@ const researcherInitialState = Researchers.allResearchers.reduce(
 	}),
 	<ResearcherStateMap>{}
 );
-export const researcherReducer = createReducer(
+const researcherReducer = createReducer(
 	researcherInitialState,
 	on(updateResearcher, (state, {id, researcherState}) =>
 		produce(state, (draft: ResearcherStateMap) => {
 			draft[id] = researcherState;
 		})
-	)
+	),
+	on(cookiesLoaded, (state, {researcherStateMap}) => ({
+		...state,
+		...researcherStateMap
+	}))
 );
 
 const analysisInitialState = Researchers.allResearchers.reduce(
@@ -36,7 +41,8 @@ const analysisInitialState = Researchers.allResearchers.reduce(
 	}),
 	<AnalysisMap>{}
 );
-export const analysisReducer = createReducer(
+
+const analysisReducer = createReducer(
 	analysisInitialState,
 	on(updateAnalysisMap, (state, {analysisMap}) => ({
 		...state,
@@ -44,10 +50,16 @@ export const analysisReducer = createReducer(
 	}))
 );
 
+const cookieReducer = createReducer(
+	false,
+	on(cookiesLoaded, () => true)
+);
+
 export const analysisReducerMap: ActionReducerMap<AnalysisRootState> = {
 	currentRank: rankReducer,
 	researcher: researcherReducer,
-	analysis: analysisReducer
+	analysis: analysisReducer,
+	cookiesLoaded: cookieReducer
 };
 
 export const selectCurrentRank = createFeatureSelector<AnalysisRootState,
@@ -58,3 +70,6 @@ export const selectResearcher = createFeatureSelector<AnalysisRootState,
 
 export const selectAnalysis = createFeatureSelector<AnalysisRootState,
 	AnalysisMap>('analysis');
+
+export const selectCookiesLoaded = createFeatureSelector<AnalysisRootState,
+	boolean>('cookiesLoaded');

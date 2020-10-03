@@ -4,6 +4,7 @@ export interface AnalysisRootState {
 	currentRank: number;
 	researcher: ResearcherStateMap;
 	analysis: AnalysisMap;
+	cookiesLoaded: boolean;
 }
 
 export type ResearcherStateMap = { [id: string]: ResearcherState };
