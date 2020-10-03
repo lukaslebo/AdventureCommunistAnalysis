@@ -9,6 +9,7 @@ import {Researchers} from './reducer/researcher.state';
 import {loadCookies, updateRank, updateResearcher, UpdateResearcherProps} from './reducer/analysis.actions';
 import {FormControl} from '@angular/forms';
 import {takeUntil} from 'rxjs/operators';
+import {Decimal} from 'decimal.js';
 
 @Component({
 	selector: 'analysis-app',
@@ -73,6 +74,14 @@ export class AppComponent implements OnDestroy {
 	rankDown() {
 		const next = Math.max((this.rankControl.value ?? 0) - 1, 1);
 		this.rankControl.setValue(next);
+	}
+
+	sortByBoostCostRatio(researchers: Researcher[], analysisMap: AnalysisMap) {
+		return researchers.sort((a, b) => {
+			const rA = new Decimal(analysisMap[a.id].boostPer1kScience);
+			const rB = new Decimal(analysisMap[b.id].boostPer1kScience);
+			return rA.comparedTo(rB) * -1;
+		});
 	}
 
 	ngOnDestroy() {

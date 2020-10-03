@@ -1,14 +1,16 @@
-<div
-		[class]="blockName"
-		fxLayout="column"
-		[fxLayoutGap]="dimensions(32)"
->
-	<div fxLayout="column"
-		 [class]="styles('header')">
-		<div [class]="styles('header-title')">Adventure Communists Researcher Analysis</div>
+<div [class]="blockName" fxLayout="column" [fxLayoutGap]="dimensions(32)">
+	<div fxLayout="column" [class]="styles('header')">
+		<div [class]="styles('header-title')">
+			Adventure Communists Researcher Analysis
+		</div>
 		<div [class]="styles('description')">description</div>
 	</div>
-	<div [class]="styles('rank-section')" fxLayout="row" fxLayoutAlign="start baseline" [fxLayoutGap]="dimensions(8)">
+	<div
+			[class]="styles('rank-section')"
+			fxLayout="row"
+			fxLayoutAlign="start baseline"
+			[fxLayoutGap]="dimensions(8)"
+	>
 		<div>Your Rank</div>
 		<mat-form-field appearance="outline" [class]="styles('rank-field')">
 			<input matInput [formControl]="rankControl" type="number"/>
@@ -19,22 +21,30 @@
 		</mat-form-field>
 	</div>
 
-	<div *ngFor="let section of sections" fxLayout="column" [class]="styles('section')">
+	<div
+			*ngFor="let section of sections"
+			fxLayout="column"
+			[class]="styles('section')"
+	>
 		<div [class]="styles('section-title')">{{ section }} Analysis</div>
-		<div
-				fxLayout="column"
-				[fxLayoutGap]="dimensions(8)"
-		>
-			<researcher-analysis-row
+		<div fxLayout="column" [fxLayoutGap]="dimensions(8)">
+			<div
 					*ngFor="
-					let researcher of researcherBySection[section];
+					let researcher of sortByBoostCostRatio(
+						researcherBySection[section],
+						analysisMap$ | async
+					);
 					trackBy: trackByResearcherId
-				"
-					[researcher]="researcher"
-					[researcherState]="(researcherStateMap$ | async)[researcher.id]"
-					[analysis]="(analysisMap$ | async)[researcher.id]"
-					(updated)="updateResearcherState($event)"
-			></researcher-analysis-row>
+				">
+
+				<researcher-analysis-row
+						*ngIf="researcher.unlockedAtRank <= (rank$ | async)"
+						[researcher]="researcher"
+						[researcherState]="(researcherStateMap$ | async)[researcher.id]"
+						[analysis]="(analysisMap$ | async)[researcher.id]"
+						(updated)="updateResearcherState($event)"
+				></researcher-analysis-row>
+			</div>
 		</div>
 	</div>
 </div>

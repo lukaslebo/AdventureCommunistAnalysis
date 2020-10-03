@@ -20,7 +20,7 @@ export class AnalysisService {
 		);
 		const totalUpgradeCost = upgradeCost?.plus(upgradeCardCost) ?? ZERO;
 		const canUpgrade = upgradeCost?.gt(ZERO) ?? false;
-		const boost = canUpgrade
+		const boost = canUpgrade || researcher.rarity === 'Supreme'
 			? this.getBoost(researcher, researcherStateMap)
 			: ZERO;
 		const boostPer1kScience = totalUpgradeCost.gt(0) ? boost.div(totalUpgradeCost).times(1000) : ZERO;
