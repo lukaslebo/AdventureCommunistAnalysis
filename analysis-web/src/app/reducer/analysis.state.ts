@@ -1,5 +1,3 @@
-import {Decimal} from 'decimal.js';
-
 export interface AnalysisRootState {
 	currentRank: number;
 	researcher: ResearcherStateMap;
@@ -60,9 +58,9 @@ export interface ResearcherState {
 }
 
 export interface Analysis {
-	boost: Decimal;
-	boostPer1kScience: Decimal;
-	upgradeCost: Decimal;
-	upgradeCardCost: Decimal;
+	boost: string;
+	boostPer1kScience: string;
+	upgradeCost: string;
+	upgradeCardCost: string;
 	canUpgrade: boolean;
 }

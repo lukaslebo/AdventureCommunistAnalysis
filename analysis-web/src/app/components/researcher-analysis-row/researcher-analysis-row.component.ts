@@ -94,13 +94,13 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 		this.formControls.availableCards.setValue(next);
 	}
 
-	format(decimal: Decimal) {
-		return toHumanReadable(decimal);
+	format(num: string) {
+		return toHumanReadable(new Decimal(num));
 	}
 
 	getCost() {
 		let cost = "Cost: " + this.format(this.analysis?.upgradeCost);
-		if (this.analysis?.upgradeCardCost.gt(0))
+		if (new Decimal(this.analysis?.upgradeCardCost).gt(0))
 			cost += " + " + this.format(this.analysis?.upgradeCardCost)
 		return cost;
 	}

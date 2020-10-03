@@ -5,6 +5,7 @@ import {Researchers} from '../reducer/researcher.state';
 
 const ZERO = new Decimal(0);
 const TWO = new Decimal(2);
+const _5K = new Decimal(5_000);
 
 @Injectable()
 export class AnalysisService {
@@ -25,11 +26,11 @@ export class AnalysisService {
 		const boostPer1kScience = totalUpgradeCost.gt(0) ? boost.div(totalUpgradeCost).times(1000) : ZERO;
 
 		const analysis: Analysis = {
-			boost,
-			boostPer1kScience,
+			boost: boost.toString(),
+			boostPer1kScience: boostPer1kScience.toString(),
 			canUpgrade,
-			upgradeCardCost,
-			upgradeCost
+			upgradeCardCost: upgradeCardCost.toString(),
+			upgradeCost: upgradeCost.toString()
 		};
 
 		return analysis;
@@ -143,7 +144,7 @@ export class AnalysisService {
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
-				).log(new Decimal(5_000));
+				).log(_5K);
 				return TWO.pow(lvl)
 					.times(TWO.pow(industryTradeExponent))
 					.times(TWO.pow(supremeTradeLvl))
@@ -164,7 +165,7 @@ export class AnalysisService {
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
-				).log(new Decimal(5_000));
+				).log(_5K);
 				return TWO.pow(lvl)
 					.times(TWO.pow(industryTradeExponent))
 					.times(TWO.pow(supremeTradeLvl))
@@ -207,7 +208,7 @@ export class AnalysisService {
 			.minus(chance)
 			.plus(nextChance.times(multiplier));
 		const boost = nextPower.div(power);
-		return boost.log(2);
+		return boost.log(TWO);
 	}
 
 	private getBonusMultiplierForIndustry(
