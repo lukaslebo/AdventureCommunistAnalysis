@@ -7,12 +7,12 @@
 	<div [class]="styles('name')">{{ researcher.researcherName }}</div>
 	<div [class]="styles('industry')">
 		<img
-				[src]="'/assets/icons/' + researcher.industry.toLowerCase() + '.png'"
+				[src]="iconPath + researcher.industry.toLowerCase() + '.png'"
 		/>
 	</div>
 	<div [class]="styles('modifier')">
 		<img
-				[src]="'/assets/icons/' + researcher.modifier.toLowerCase() + '.png'"
+				[src]="iconPath + researcher.modifier.toLowerCase() + '.png'"
 		/>
 	</div>
 	<mat-form-field [class]="styles('current-level')">

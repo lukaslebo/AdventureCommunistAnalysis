@@ -1,3 +1,4 @@
 export const environment = {
-	production: true
+	production: true,
+	iconPath: '/AdventureCommunistAnalysis/assets/icons/'
 };

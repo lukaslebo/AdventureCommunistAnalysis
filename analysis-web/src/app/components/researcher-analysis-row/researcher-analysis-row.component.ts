@@ -10,6 +10,7 @@ import {UpdateResearcherProps} from '../../reducer/analysis.actions';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {Decimal} from 'decimal.js';
 import {toHumanReadable} from "../../util/human-readable-numbers";
+import {environment} from "../../../environments/environment";
 
 @Component({
 	selector: 'researcher-analysis-row',
@@ -26,6 +27,8 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	readonly blockName = 'researcher-analysis-row';
 	readonly styles = BEM(this.blockName);
 	readonly dimensions = REM();
+
+	readonly iconPath = environment.iconPath
 
 	@Input()
 	researcher: Researcher;
