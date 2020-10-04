@@ -1,7 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Decimal} from 'decimal.js';
-import {Analysis, Industry, Researcher, ResearcherStateMap} from '../reducer/analysis.state';
-import {Researchers} from '../reducer/researcher.state';
+import { Injectable } from '@angular/core';
+import { Decimal } from 'decimal.js';
+import {
+	Analysis,
+	Industry,
+	Researcher,
+	ResearcherStateMap
+} from '../reducer/analysis.state';
+import { Researchers } from '../reducer/researcher.state';
 
 const ZERO = new Decimal(0);
 const TWO = new Decimal(2);
@@ -127,7 +132,7 @@ export class AnalysisService {
 				Researchers.allResearchers.find(
 					(r) => r.rarity === 'Supreme' && r.modifier === 'Trade'
 				)?.id
-				]?.currentLevel ?? 0;
+			]?.currentLevel ?? 0;
 
 		const industries: Industry[] = [
 			'Potato',
@@ -143,7 +148,7 @@ export class AnalysisService {
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-						]?.currentLevel ?? 0;
+					]?.currentLevel ?? 0;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
@@ -163,7 +168,7 @@ export class AnalysisService {
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-						]?.currentLevel ?? 0;
+					]?.currentLevel ?? 0;
 				if (researcher.industry === industry) lvl++;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,

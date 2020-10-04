@@ -1,5 +1,9 @@
-import {createAction, props} from '@ngrx/store';
-import {AnalysisMap, ResearcherState, ResearcherStateMap} from './analysis.state';
+import { createAction, props } from '@ngrx/store';
+import {
+	AnalysisMap,
+	ResearcherState,
+	ResearcherStateMap
+} from './analysis.state';
 
 export const updateRank = createAction(
 	'[Analysis] updateRank',
@@ -21,14 +25,12 @@ export const updateAnalysisMap = createAction(
 	props<{ analysisMap: AnalysisMap }>()
 );
 
-export const loadCookies = createAction(
-	'[Analysis] loadStateFromCookie'
-);
+export const loadCookies = createAction('[Analysis] loadStateFromCookie');
 
 export const cookiesLoaded = createAction(
 	'[Analysis] cookiesLoaded',
 	props<{
-		rank: number,
-		researcherStateMap: ResearcherStateMap
+		rank: number;
+		researcherStateMap: ResearcherStateMap;
 	}>()
-)
+);

@@ -1,15 +1,30 @@
-import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import {BEM} from './util/bem';
-import {REM} from './util/rem';
-import {select, Store} from '@ngrx/store';
-import {selectAnalysis, selectCurrentRank, selectResearcher} from './reducer/analysis.reducer';
-import {Observable, Subject} from 'rxjs';
-import {AnalysisMap, Researcher, ResearcherStateMap, Section, sections} from './reducer/analysis.state';
-import {Researchers} from './reducer/researcher.state';
-import {loadCookies, updateRank, updateResearcher, UpdateResearcherProps} from './reducer/analysis.actions';
-import {FormControl} from '@angular/forms';
-import {takeUntil} from 'rxjs/operators';
-import {Decimal} from 'decimal.js';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { BEM } from './util/bem';
+import { REM } from './util/rem';
+import { select, Store } from '@ngrx/store';
+import {
+	selectAnalysis,
+	selectCurrentRank,
+	selectResearcher
+} from './reducer/analysis.reducer';
+import { Observable, Subject } from 'rxjs';
+import {
+	AnalysisMap,
+	Researcher,
+	ResearcherStateMap,
+	Section,
+	sections
+} from './reducer/analysis.state';
+import { Researchers } from './reducer/researcher.state';
+import {
+	loadCookies,
+	updateRank,
+	updateResearcher,
+	UpdateResearcherProps
+} from './reducer/analysis.actions';
+import { FormControl } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
+import { Decimal } from 'decimal.js';
 
 @Component({
 	selector: 'analysis-app',
@@ -24,7 +39,7 @@ export class AppComponent implements OnDestroy {
 	readonly researcherStateMap$: Observable<ResearcherStateMap>;
 	readonly rank$: Observable<number>;
 	readonly analysisMap$: Observable<AnalysisMap>;
-	readonly rankControl = new FormControl(null, {updateOn: 'blur'});
+	readonly rankControl = new FormControl(null, { updateOn: 'blur' });
 	readonly sortControl = new FormControl(false);
 	readonly destroyed$ = new Subject<void>();
 
@@ -54,11 +69,11 @@ export class AppComponent implements OnDestroy {
 
 		this.rankControl.valueChanges
 			.pipe(takeUntil(this.destroyed$))
-			.subscribe((rank) => this.store.dispatch(updateRank({rank})));
+			.subscribe((rank) => this.store.dispatch(updateRank({ rank })));
 		this.rank$
 			.pipe(takeUntil(this.destroyed$))
 			.subscribe((rank) =>
-				this.rankControl.patchValue(rank, {emitEvent: false})
+				this.rankControl.patchValue(rank, { emitEvent: false })
 			);
 
 		this.sortControl.valueChanges
@@ -84,8 +99,12 @@ export class AppComponent implements OnDestroy {
 		this.rankControl.setValue(next);
 	}
 
-	filterAndSort(researchers: Researcher[], analysisMap: AnalysisMap, rank: number) {
-		const res = researchers.filter(r => r.unlockedAtRank <= rank);
+	filterAndSort(
+		researchers: Researcher[],
+		analysisMap: AnalysisMap,
+		rank: number
+	) {
+		const res = researchers.filter((r) => r.unlockedAtRank <= rank);
 		if (!this.sortControl.value) return res;
 		return res.sort((a, b) => {
 			const rA = new Decimal(analysisMap[a.id].boostPer1kScience);

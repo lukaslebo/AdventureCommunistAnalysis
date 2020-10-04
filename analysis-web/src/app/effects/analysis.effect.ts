@@ -1,13 +1,22 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {cookiesLoaded, loadCookies, updateAnalysisMap, updateRank, updateResearcher} from '../reducer/analysis.actions';
-import {map, tap, withLatestFrom} from 'rxjs/operators';
-import {AnalysisMap, ResearcherStateMap} from '../reducer/analysis.state';
-import {Researchers} from '../reducer/researcher.state';
-import {select, Store} from '@ngrx/store';
-import {selectCurrentRank, selectResearcher} from '../reducer/analysis.reducer';
-import {AnalysisService} from '../service/analysis.service';
-import {CookieService} from 'ngx-cookie-service';
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {
+	cookiesLoaded,
+	loadCookies,
+	updateAnalysisMap,
+	updateRank,
+	updateResearcher
+} from '../reducer/analysis.actions';
+import { map, tap, withLatestFrom } from 'rxjs/operators';
+import { AnalysisMap, ResearcherStateMap } from '../reducer/analysis.state';
+import { Researchers } from '../reducer/researcher.state';
+import { select, Store } from '@ngrx/store';
+import {
+	selectCurrentRank,
+	selectResearcher
+} from '../reducer/analysis.reducer';
+import { AnalysisService } from '../service/analysis.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class AnalysisEffect {
@@ -16,8 +25,7 @@ export class AnalysisEffect {
 		private readonly store: Store,
 		private readonly analysisService: AnalysisService,
 		private readonly cookieService: CookieService
-	) {
-	}
+	) {}
 
 	readonly loadCookie$ = createEffect(() =>
 		this.actions.pipe(
@@ -36,7 +44,7 @@ export class AnalysisEffect {
 				if (this.cookieService.check('RANK')) {
 					rank = JSON.parse(this.cookieService.get('RANK'));
 				}
-				return cookiesLoaded({rank, researcherStateMap});
+				return cookiesLoaded({ rank, researcherStateMap });
 			})
 		)
 	);
@@ -90,9 +98,9 @@ export class AnalysisEffect {
 					.map((r) => ({
 						[r.id]: this.analysisService.analyze(r, researcherStateMap)
 					}))
-					.reduce((acc, next) => ({...acc, ...next}), <AnalysisMap>{});
+					.reduce((acc, next) => ({ ...acc, ...next }), <AnalysisMap>{});
 
-				return updateAnalysisMap({analysisMap});
+				return updateAnalysisMap({ analysisMap });
 			})
 		)
 	);

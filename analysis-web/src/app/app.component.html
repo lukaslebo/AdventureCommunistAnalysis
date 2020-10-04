@@ -14,30 +14,30 @@
 			</div>
 		</div>
 		<div
-				[class]="styles('rank-section')"
-				fxLayout="row"
-				fxLayoutAlign="start baseline"
-				[fxLayoutGap]="dimensions(8)"
+			[class]="styles('rank-section')"
+			fxLayout="row"
+			fxLayoutAlign="start baseline"
+			[fxLayoutGap]="dimensions(8)"
 		>
 			<div>Your Rank</div>
 			<mat-form-field appearance="outline" [class]="styles('rank-field')">
-				<input matInput [formControl]="rankControl" type="number"/>
+				<input matInput [formControl]="rankControl" type="number" />
 				<div matSuffix fxLayout="row">
 					<mat-icon (click)="rankUp()">arrow_circle_up</mat-icon>
 					<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
 				</div>
 			</mat-form-field>
 			<mat-checkbox
-					[class]="styles('sort-checkbox')"
-					[formControl]="sortControl"
-			>Sort by most valuable Researchers
+				[class]="styles('sort-checkbox')"
+				[formControl]="sortControl"
+				>Sort by most valuable Researchers
 			</mat-checkbox>
 		</div>
 
 		<div
-				*ngFor="let section of sections"
-				fxLayout="column"
-				[class]="styles('section')"
+			*ngFor="let section of sections"
+			fxLayout="column"
+			[class]="styles('section')"
 		>
 			<div fxLayout="row">
 				<div [class]="styles('section-title')">{{ section }} Analysis</div>
@@ -49,7 +49,7 @@
 			</div>
 			<div fxLayout="column" [fxLayoutGap]="dimensions(8)">
 				<div
-						*ngFor="
+					*ngFor="
 						let researcher of filterAndSort(
 							researcherBySection[section],
 							analysisMap$ | async,
@@ -59,10 +59,10 @@
 					"
 				>
 					<researcher-analysis-row
-							[researcher]="researcher"
-							[researcherState]="(researcherStateMap$ | async)[researcher.id]"
-							[analysis]="(analysisMap$ | async)[researcher.id]"
-							(updated)="updateResearcherState($event)"
+						[researcher]="researcher"
+						[researcherState]="(researcherStateMap$ | async)[researcher.id]"
+						[analysis]="(analysisMap$ | async)[researcher.id]"
+						(updated)="updateResearcherState($event)"
 					></researcher-analysis-row>
 				</div>
 			</div>

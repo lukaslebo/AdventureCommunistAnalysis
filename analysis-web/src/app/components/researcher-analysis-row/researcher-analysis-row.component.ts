@@ -1,16 +1,26 @@
-import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
-import {BEM} from '../../util/bem';
-import {REM} from '../../util/rem';
-import {Analysis, Researcher, ResearcherState} from '../../reducer/analysis.state';
-import {FormBuilder, FormControl} from '@angular/forms';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {initialResearcherState} from '../../reducer/analysis.reducer';
-import {takeUntil} from 'rxjs/operators';
-import {UpdateResearcherProps} from '../../reducer/analysis.actions';
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
-import {Decimal} from 'decimal.js';
-import {toHumanReadable} from "../../util/human-readable-numbers";
-import {environment} from "../../../environments/environment";
+import {
+	Component,
+	EventEmitter,
+	Input,
+	OnDestroy,
+	Output
+} from '@angular/core';
+import { BEM } from '../../util/bem';
+import { REM } from '../../util/rem';
+import {
+	Analysis,
+	Researcher,
+	ResearcherState
+} from '../../reducer/analysis.state';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { initialResearcherState } from '../../reducer/analysis.reducer';
+import { takeUntil } from 'rxjs/operators';
+import { UpdateResearcherProps } from '../../reducer/analysis.actions';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { Decimal } from 'decimal.js';
+import { toHumanReadable } from '../../util/human-readable-numbers';
+import { environment } from '../../../environments/environment';
 
 @Component({
 	selector: 'researcher-analysis-row',
@@ -19,7 +29,7 @@ import {environment} from "../../../environments/environment";
 	providers: [
 		{
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-			useValue: {appearance: 'outline', floatLabel: 'auto'}
+			useValue: { appearance: 'outline', floatLabel: 'auto' }
 		}
 	]
 })
@@ -28,7 +38,7 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	readonly styles = BEM(this.blockName);
 	readonly dimensions = REM();
 
-	readonly iconPath = environment.iconPath
+	readonly iconPath = environment.iconPath;
 
 	@Input()
 	researcher: Researcher;
@@ -56,7 +66,7 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 		currentLevel: new FormControl(null),
 		availableCards: new FormControl(null)
 	};
-	formGroup = this.formBuilder.group(this.formControls, {updateOn: 'blur'});
+	formGroup = this.formBuilder.group(this.formControls, { updateOn: 'blur' });
 
 	destroyed$ = new Subject<void>();
 
@@ -64,7 +74,7 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 		this.researcherState$
 			.pipe(takeUntil(this.destroyed$))
 			.subscribe((researcherState) =>
-				this.formGroup.patchValue(researcherState, {emitEvent: false})
+				this.formGroup.patchValue(researcherState, { emitEvent: false })
 			);
 		this.formGroup.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() =>
 			this.updated.emit({
@@ -103,10 +113,10 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 
 	getCost() {
 		return [this.analysis?.upgradeCost, this.analysis?.upgradeCardCost]
-			.map(e => new Decimal(e))
-			.filter(n => n.gt(0))
-			.map(n => toHumanReadable(n))
-			.join(" + ")
+			.map((e) => new Decimal(e))
+			.filter((n) => n.gt(0))
+			.map((n) => toHumanReadable(n))
+			.join(' + ');
 	}
 
 	ngOnDestroy() {

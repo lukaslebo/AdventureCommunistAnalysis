@@ -1,4 +1,4 @@
-import {BEM} from './bem';
+import { BEM } from './bem';
 
 describe('BEM', () => {
 	it('should create BEM classes', () => {
