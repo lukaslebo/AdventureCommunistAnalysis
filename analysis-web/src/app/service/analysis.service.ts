@@ -19,11 +19,14 @@ export class AnalysisService {
 			researcherStateMap
 		);
 		const totalUpgradeCost = upgradeCost?.plus(upgradeCardCost) ?? ZERO;
-		const canUpgrade = upgradeCost?.gt(ZERO) ?? false;
-		const boost = canUpgrade || researcher.rarity === 'Supreme'
-			? this.getBoost(researcher, researcherStateMap)
+		const canUpgrade = this.canUpgrade(researcher, researcherStateMap);
+		const boost =
+			canUpgrade || researcher.rarity === 'Supreme'
+				? this.getBoost(researcher, researcherStateMap)
+				: ZERO;
+		const boostPer1kScience = totalUpgradeCost.gt(0)
+			? boost.div(totalUpgradeCost).times(1000)
 			: ZERO;
-		const boostPer1kScience = totalUpgradeCost.gt(0) ? boost.div(totalUpgradeCost).times(1000) : ZERO;
 
 		const analysis: Analysis = {
 			boost: boost.toString(),
@@ -181,7 +184,11 @@ export class AnalysisService {
 		researcherStateMap: ResearcherStateMap
 	) {
 		return Researchers.allResearchers
-			.filter((r) => (r.industry === industry || industry == 'All') && r.rarity === 'Common')
+			.filter(
+				(r) =>
+					(r.industry === industry || industry == 'All') &&
+					r.rarity === 'Common'
+			)
 			.map((r) => researcherStateMap[r.id].currentLevel)
 			.filter((lvl) => lvl > 0).length;
 	}
@@ -483,6 +490,23 @@ export class AnalysisService {
 				return new Decimal(1_000);
 			case 'Supreme':
 				return new Decimal(40_000);
+		}
+	}
+
+	private canUpgrade(
+		researcher: Researcher,
+		researcherStateMap: ResearcherStateMap
+	) {
+		const lvl = researcherStateMap[researcher.id]?.currentLevel ?? 0;
+		switch (researcher.rarity) {
+			case 'Common':
+				return lvl < 13;
+			case 'Rare':
+				return lvl < 11;
+			case 'Epic':
+				return lvl < 8;
+			case 'Supreme':
+				return lvl < 5;
 		}
 	}
 

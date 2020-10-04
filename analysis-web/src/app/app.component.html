@@ -1,64 +1,70 @@
 <div [class]="blockName" fxLayout="column" [fxLayoutGap]="dimensions(32)">
-	<div fxLayout="column" [class]="styles('header')">
-		<div [class]="styles('header-title')">
-			Adventure Communists Researcher Analysis
-		</div>
-		<div [class]="styles('description')">
-			<p>Enter your rank below and set the levels of your researchers.</p>
-			<p>
-				If you like you can set the available cards for some of your
-				researchers, so the cost of buying the cards for science can be factored
-				in.
-			</p>
-		</div>
-	</div>
-	<div
-			[class]="styles('rank-section')"
-			fxLayout="row"
-			fxLayoutAlign="start baseline"
-			[fxLayoutGap]="dimensions(8)"
-	>
-		<div>Your Rank</div>
-		<mat-form-field appearance="outline" [class]="styles('rank-field')">
-			<input matInput [formControl]="rankControl" type="number"/>
-			<div matSuffix fxLayout="row">
-				<mat-icon (click)="rankUp()">arrow_circle_up</mat-icon>
-				<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
+	<div [class]="styles('scroll-container')">
+		<div fxLayout="column" [class]="styles('header')">
+			<div [class]="styles('header-title')">
+				Adventure Communists Researcher Analysis
 			</div>
-		</mat-form-field>
-		<mat-checkbox [class]="styles('sort-checkbox')" [formControl]="sortControl"
-		>Sort by most valuable Researchers
-		</mat-checkbox
-		>
-	</div>
-
-	<div
-			*ngFor="let section of sections"
-			fxLayout="column"
-			[class]="styles('section')"
-	>
-		<div fxLayout="row">
-			<div [class]="styles('section-title')">{{ section }} Analysis</div>
-			<div [class]="styles('section-header-lvl')">Level</div>
-			<div [class]="styles('section-header-cards')">Available Cards</div>
+			<div [class]="styles('description')">
+				<p>Enter your rank below and set the levels of your researchers.</p>
+				<p>
+					If you like you can set the available cards for some of your
+					researchers, so the cost of buying the cards for science can be
+					factored in.
+				</p>
+			</div>
 		</div>
-		<div fxLayout="column" [fxLayoutGap]="dimensions(8)">
-			<div
-					*ngFor="
-					let researcher of filterAndSort(
-						researcherBySection[section],
-						analysisMap$ | async,
-						rank$ | async
-					);
-					trackBy: trackByResearcherId
-				"
-			>
-				<researcher-analysis-row
-						[researcher]="researcher"
-						[researcherState]="(researcherStateMap$ | async)[researcher.id]"
-						[analysis]="(analysisMap$ | async)[researcher.id]"
-						(updated)="updateResearcherState($event)"
-				></researcher-analysis-row>
+		<div
+				[class]="styles('rank-section')"
+				fxLayout="row"
+				fxLayoutAlign="start baseline"
+				[fxLayoutGap]="dimensions(8)"
+		>
+			<div>Your Rank</div>
+			<mat-form-field appearance="outline" [class]="styles('rank-field')">
+				<input matInput [formControl]="rankControl" type="number"/>
+				<div matSuffix fxLayout="row">
+					<mat-icon (click)="rankUp()">arrow_circle_up</mat-icon>
+					<mat-icon (click)="rankDown()">arrow_circle_down</mat-icon>
+				</div>
+			</mat-form-field>
+			<mat-checkbox
+					[class]="styles('sort-checkbox')"
+					[formControl]="sortControl"
+			>Sort by most valuable Researchers
+			</mat-checkbox>
+		</div>
+
+		<div
+				*ngFor="let section of sections"
+				fxLayout="column"
+				[class]="styles('section')"
+		>
+			<div fxLayout="row">
+				<div [class]="styles('section-title')">{{ section }} Analysis</div>
+				<div [class]="styles('section-header-lvl')">Level</div>
+				<div [class]="styles('section-header-cards')">Available Cards</div>
+				<div [class]="styles('section-header-boost')">Boost</div>
+				<div [class]="styles('section-header-cost')">Cost</div>
+				<div [class]="styles('section-header-value')">Boost per 1k science</div>
+			</div>
+			<div fxLayout="column" [fxLayoutGap]="dimensions(8)">
+				<div
+						*ngFor="
+						let researcher of filterAndSort(
+							researcherBySection[section],
+							analysisMap$ | async,
+							rank$ | async
+						);
+						trackBy: trackByResearcherId
+					"
+				>
+					<researcher-analysis-row
+							[researcher]="researcher"
+							[researcherState]="(researcherStateMap$ | async)[researcher.id]"
+							[analysis]="(analysisMap$ | async)[researcher.id]"
+							(updated)="updateResearcherState($event)"
+					></researcher-analysis-row>
+				</div>
 			</div>
 		</div>
 	</div>

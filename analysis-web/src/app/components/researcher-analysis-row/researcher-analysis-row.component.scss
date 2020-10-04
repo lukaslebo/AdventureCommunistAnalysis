@@ -2,7 +2,7 @@
 
 .researcher-analysis-row {
 	height: 32 * $dim-1px;
-	width: 1100 * $dim-1px;
+	width: 100%;
 
 	&__name {
 		width: 184 * $dim-1px;
@@ -36,11 +36,11 @@
 	}
 
 	&__boost {
-		width: 96 * $dim-1px;
+		width: (96 - 40) * $dim-1px;
 	}
 
 	&__cost {
-		width: 120 * $dim-1px;
+		width: (120 - 40) * $dim-1px;
 	}
 
 	&__ratio {

@@ -26,7 +26,6 @@
 		<input matInput [formControl]="formControls.availableCards" type="number"/>
 		<div
 				matSuffix
-				fxFlexAlign="center center"
 				fxLayout="row"
 				fxLayoutAlign="start center"
 		>
@@ -34,11 +33,11 @@
 			<mat-icon (click)="cardsDown()">arrow_circle_down</mat-icon>
 		</div>
 	</mat-form-field>
-	<div [class]="styles('boost')">Boost: {{ format(analysis?.boost) }}</div>
+	<div [class]="styles('boost')">{{ format(analysis?.boost) }}</div>
 	<div [class]="styles('cost')">
 		{{ getCost() }}
 	</div>
 	<div [class]="styles('ratio')">
-		Boost per 1k Science: {{ format(analysis?.boostPer1kScience) }}
+		{{ format(analysis?.boostPer1kScience) }}
 	</div>
 </div>

@@ -102,10 +102,11 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	}
 
 	getCost() {
-		let cost = "Cost: " + this.format(this.analysis?.upgradeCost);
-		if (new Decimal(this.analysis?.upgradeCardCost).gt(0))
-			cost += " + " + this.format(this.analysis?.upgradeCardCost)
-		return cost;
+		return [this.analysis?.upgradeCost, this.analysis?.upgradeCardCost]
+			.map(e => new Decimal(e))
+			.filter(n => n.gt(0))
+			.map(n => toHumanReadable(n))
+			.join(" + ")
 	}
 
 	ngOnDestroy() {
