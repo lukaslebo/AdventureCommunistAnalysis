@@ -1,15 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Decimal } from 'decimal.js';
-import {
-	Analysis,
-	Industry,
-	Researcher,
-	ResearcherStateMap
-} from '../reducer/analysis.state';
-import { Researchers } from '../reducer/researcher.state';
+import {Injectable} from '@angular/core';
+import {Decimal} from 'decimal.js';
+import {Analysis, Industry, Researcher, ResearcherStateMap} from '../reducer/analysis.state';
+import {Researchers} from '../reducer/researcher.state';
 
 const ZERO = new Decimal(0);
+const ONE = new Decimal(1);
 const TWO = new Decimal(2);
+const FOUR = new Decimal(4);
+const NINE = new Decimal(9);
 const _5K = new Decimal(5_000);
 
 @Injectable()
@@ -51,13 +49,10 @@ export class AnalysisService {
 			(r) => r.industry === industry || r.industry === 'All'
 		);
 
-		let power = new Decimal(1);
+		let power = ONE;
 		for (let researcher of researchers) {
 			const lvl = researcherStateMap[researcher.id].currentLevel ?? 0;
-			if (
-				researcher.modifier === 'Speed' ||
-				researcher.modifier === 'SinglePower'
-			) {
+			if (researcher.modifier === 'Speed') {
 				power = power.times(TWO.pow(lvl));
 			} else if (researcher.modifier === 'Power') {
 				power = power.times(
@@ -68,6 +63,8 @@ export class AnalysisService {
 						)
 					)
 				);
+			} else if (researcher.modifier === 'SinglePower') {
+				power = power.times(NINE.times(TWO.pow(Math.max(lvl - 1, 0))));
 			}
 		}
 
@@ -82,7 +79,7 @@ export class AnalysisService {
 		);
 
 		power = power.times(
-			new Decimal(1).minus(chance).plus(chance.times(bonusMultiplier))
+			ONE.minus(chance).plus(chance.times(bonusMultiplier))
 		);
 		power = power.times(discountFactor);
 
@@ -95,7 +92,7 @@ export class AnalysisService {
 	): Decimal {
 		switch (researcher.modifier) {
 			case 'Speed':
-				return new Decimal('1');
+				return ONE;
 			case 'Power':
 				return new Decimal(
 					this.getCommonCountForIndustry(
@@ -108,18 +105,17 @@ export class AnalysisService {
 			case 'Chance':
 				return this.getChanceBoost(researcher, researcherStateMap);
 			case 'Discount':
+				// log2(10)
 				return new Decimal('3.32192809489');
 			case 'Bonus':
-				return new Decimal('2').times(
-					new Decimal(
-						this.getCommonCountForIndustry(
-							researcher.industry,
-							researcherStateMap
-						)
+				return TWO.times(
+					this.getCommonCountForIndustry(
+						researcher.industry,
+						researcherStateMap
 					)
 				);
 			case 'SinglePower':
-				return new Decimal('1');
+				return (researcherStateMap[researcher.id].currentLevel ?? 0) == 0 ? NINE.log(TWO) : ONE;
 		}
 	}
 
@@ -132,7 +128,7 @@ export class AnalysisService {
 				Researchers.allResearchers.find(
 					(r) => r.rarity === 'Supreme' && r.modifier === 'Trade'
 				)?.id
-			]?.currentLevel ?? 0;
+				]?.currentLevel ?? 0;
 
 		const industries: Industry[] = [
 			'Potato',
@@ -148,7 +144,7 @@ export class AnalysisService {
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-					]?.currentLevel ?? 0;
+						]?.currentLevel ?? 0;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
@@ -168,7 +164,7 @@ export class AnalysisService {
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-					]?.currentLevel ?? 0;
+						]?.currentLevel ?? 0;
 				if (researcher.industry === industry) lvl++;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
@@ -215,8 +211,8 @@ export class AnalysisService {
 			researcher.industry,
 			researcherStateMap
 		);
-		const power = new Decimal(1).minus(chance).plus(chance.times(multiplier));
-		const nextPower = new Decimal(1)
+		const power = ONE.minus(chance).plus(chance.times(multiplier));
+		const nextPower = ONE
 			.minus(chance)
 			.plus(nextChance.times(multiplier));
 		const boost = nextPower.div(power);
@@ -235,7 +231,7 @@ export class AnalysisService {
 			)
 			.map((r) => researcherStateMap[r.id].currentLevel)
 			.filter((lvl) => lvl > 0)
-			.reduce((acc, lvl) => acc.times(new Decimal(4).pow(lvl)), new Decimal(2));
+			.reduce((acc, lvl) => acc.times(FOUR.pow(lvl)), TWO);
 	}
 
 	private getDiscountFactorForIndustry(
@@ -251,7 +247,7 @@ export class AnalysisService {
 			.map((r) => researcherStateMap[r.id].currentLevel ?? 0)
 			.reduce(
 				(acc, lvl) => acc.times(this.getDiscountFactorFromLvl(lvl)),
-				new Decimal(1)
+				ONE
 			);
 	}
 
@@ -436,9 +432,9 @@ export class AnalysisService {
 		const lvl = researcherStateMap[researcher.id].currentLevel ?? 0;
 		switch (lvl) {
 			case 0:
-				return new Decimal(1);
+				return ONE;
 			case 1:
-				return new Decimal(2);
+				return TWO;
 			case 2:
 				return new Decimal(5);
 			case 3:

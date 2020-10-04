@@ -1,10 +1,12 @@
 import Industry.All
 import Modifier.*
 import Rarity.*
+import java.lang.Integer.max
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 private val TWO = BigDecimal(2)
+private val NINE = BigDecimal(9)
 
 sealed class Analysis(val researcher: Researcher) {
 	val upgradeCost = getUpgradeCost(researcher)
@@ -45,7 +47,7 @@ fun Industry.getIndustryPower(): BigDecimal {
 			Speed -> power *= TWO.pow(researcher.getLevel())
 			Power -> power *= TWO.pow(researcher.getLevel())
 				.pow(researcher.industry.getCommonCountForIndustry().intValueExact())
-			SinglePower -> power *= TWO.pow(researcher.getLevel())
+			SinglePower -> power *= NINE.times(TWO.pow(max(researcher.getLevel() - 1, 0)))
 			Chance -> Unit
 			Bonus -> Unit
 			Discount -> Unit
@@ -77,7 +79,7 @@ private fun getIndustryBoostAsExponentOfTwo(researcher: Researcher): BigDecimal 
 	}
 	Discount -> BigDecimal(10).log(2, 2)
 	Bonus -> researcher.industry.getCommonCountForIndustry() * TWO
-	SinglePower -> BigDecimal.ONE
+	SinglePower -> if (researcher.getLevel() == 0) NINE else TWO
 }
 
 private fun getTradeBoost(researcher: Researcher): BigDecimal {
