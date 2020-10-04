@@ -36,13 +36,10 @@
 	}
 
 	&__boost {
-		width: (96 - 40) * $dim-1px;
+		width: 56 * $dim-1px;
 	}
 
 	&__cost {
-		width: (120 - 40) * $dim-1px;
-	}
-
-	&__ratio {
+		width: 80 * $dim-1px;
 	}
 }
