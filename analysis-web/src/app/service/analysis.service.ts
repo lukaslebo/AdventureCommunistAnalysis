@@ -1,7 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Decimal} from 'decimal.js';
-import {Analysis, Industry, Researcher, ResearcherStateMap} from '../reducer/analysis.state';
-import {Researchers} from '../reducer/researcher.state';
+import { Injectable } from '@angular/core';
+import { Decimal } from 'decimal.js';
+import {
+	Analysis,
+	Industry,
+	Researcher,
+	ResearcherStateMap
+} from '../reducer/analysis.state';
+import { Researchers } from '../reducer/researcher.state';
+import { unitsMapping } from '../util/human-readable-numbers';
 
 const ZERO = new Decimal(0);
 const ONE = new Decimal(1);
@@ -27,19 +33,25 @@ export class AnalysisService {
 			canUpgrade || researcher.rarity === 'Supreme'
 				? this.getBoost(researcher, researcherStateMap)
 				: ZERO;
-		const boostPer1kScience = totalUpgradeCost.gt(0)
-			? boost.div(totalUpgradeCost).times(1000)
-			: ZERO;
+		const boostPer1kScience = this.getBoostPer1kScience(researcher, totalUpgradeCost, boost);
 
-		const analysis: Analysis = {
+		return {
 			boost: boost.toString(),
 			boostPer1kScience: boostPer1kScience.toString(),
 			canUpgrade,
 			upgradeCardCost: upgradeCardCost.toString(),
 			upgradeCost: upgradeCost.toString()
 		};
+	}
 
-		return analysis;
+	private getBoostPer1kScience(researcher: Researcher, totalUpgradeCost: Decimal, boost: Decimal) {
+		if (totalUpgradeCost.equals(0)) {
+			return ZERO;
+		}
+		if (researcher.modifier === 'Trade') {
+			return boost.minus(1).div(totalUpgradeCost.div(1000)).plus(1);
+		}
+		return boost.div(totalUpgradeCost.div(1000));
 	}
 
 	getIndustryPower(industry: Industry, researcherStateMap: ResearcherStateMap) {
@@ -78,9 +90,7 @@ export class AnalysisService {
 			researcherStateMap
 		);
 
-		power = power.times(
-			ONE.minus(chance).plus(chance.times(bonusMultiplier))
-		);
+		power = power.times(ONE.minus(chance).plus(chance.times(bonusMultiplier)));
 		power = power.times(discountFactor);
 
 		return power;
@@ -115,7 +125,9 @@ export class AnalysisService {
 					)
 				);
 			case 'SinglePower':
-				return (researcherStateMap[researcher.id].currentLevel ?? 0) == 0 ? NINE.log(TWO) : ONE;
+				return (researcherStateMap[researcher.id].currentLevel ?? 0) == 0
+					? NINE.log(TWO)
+					: ONE;
 		}
 	}
 
@@ -128,7 +140,7 @@ export class AnalysisService {
 				Researchers.allResearchers.find(
 					(r) => r.rarity === 'Supreme' && r.modifier === 'Trade'
 				)?.id
-				]?.currentLevel ?? 0;
+			]?.currentLevel ?? 0;
 
 		const industries: Industry[] = [
 			'Potato',
@@ -139,19 +151,23 @@ export class AnalysisService {
 		];
 		const currentTradePower = industries
 			.map((industry) => {
-				const lvl =
+				const researcherState =
 					researcherStateMap[
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-						]?.currentLevel ?? 0;
+					];
+				const lvl = researcherState?.currentLevel ?? 0;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
 				).log(_5K);
+				const tradeCount =
+					this.getTradeCount(researcherState?.nextTradeCost) ??
+					industryTradeExponent;
 				return TWO.pow(lvl)
-					.times(TWO.pow(industryTradeExponent))
 					.times(TWO.pow(supremeTradeLvl))
+					.times(tradeCount)
 					.times(this.getIndustryTradeMultiplier(industry));
 			})
 			.reduce((acc, power) => acc.plus(power), ZERO);
@@ -159,20 +175,24 @@ export class AnalysisService {
 		if (researcher.rarity === 'Supreme') supremeTradeLvl++;
 		const boostedTradePower = industries
 			.map((industry) => {
-				let lvl =
+				const researcherState =
 					researcherStateMap[
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
 						)?.id
-						]?.currentLevel ?? 0;
+					];
+				let lvl = researcherState?.currentLevel ?? 0;
 				if (researcher.industry === industry) lvl++;
 				const industryTradeExponent = this.getIndustryPower(
 					industry,
 					researcherStateMap
 				).log(_5K);
+				const tradeCount =
+					this.getTradeCount(researcherState?.nextTradeCost) ??
+					industryTradeExponent;
 				return TWO.pow(lvl)
-					.times(TWO.pow(industryTradeExponent))
 					.times(TWO.pow(supremeTradeLvl))
+					.times(tradeCount)
 					.times(this.getIndustryTradeMultiplier(industry));
 			})
 			.reduce((acc, power) => acc.plus(power), ZERO);
@@ -212,9 +232,7 @@ export class AnalysisService {
 			researcherStateMap
 		);
 		const power = ONE.minus(chance).plus(chance.times(multiplier));
-		const nextPower = ONE
-			.minus(chance)
-			.plus(nextChance.times(multiplier));
+		const nextPower = ONE.minus(chance).plus(nextChance.times(multiplier));
 		const boost = nextPower.div(power);
 		return boost.log(TWO);
 	}
@@ -245,10 +263,7 @@ export class AnalysisService {
 					(r.industry === industry || r.industry === 'All')
 			)
 			.map((r) => researcherStateMap[r.id].currentLevel ?? 0)
-			.reduce(
-				(acc, lvl) => acc.times(this.getDiscountFactorFromLvl(lvl)),
-				ONE
-			);
+			.reduce((acc, lvl) => acc.times(this.getDiscountFactorFromLvl(lvl)), ONE);
 	}
 
 	private getDiscountFactorFromLvl(lvl: number) {
@@ -526,5 +541,21 @@ export class AnalysisService {
 			case 'All':
 				return new Decimal(1 + 2 + 3 + 4 + 5);
 		}
+	}
+
+	private getTradeCount(nextTradeCost: string): Decimal {
+		if (nextTradeCost === '5000') {
+			return new Decimal(0);
+		}
+		const num = nextTradeCost?.match(/(?<num>[0-9]*)(?<unit>[a-z]*)/i).groups
+			.num;
+		const unit = nextTradeCost?.match(/(?<num>[0-9]*)(?<unit>[a-z]*)/i).groups
+			.unit;
+		const index = unitsMapping.indexOf(unit);
+
+		if ((!num || num === '5') && index > -1) {
+			return new Decimal(Math.max(index - 1, 0));
+		}
+		return null;
 	}
 }

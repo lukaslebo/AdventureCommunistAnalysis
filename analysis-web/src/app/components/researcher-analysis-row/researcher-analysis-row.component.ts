@@ -64,7 +64,8 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 
 	formControls: Record<keyof ResearcherState, FormControl> = {
 		currentLevel: new FormControl(null),
-		availableCards: new FormControl(null)
+		availableCards: new FormControl(null),
+		nextTradeCost: new FormControl(null)
 	};
 	formGroup = this.formBuilder.group(this.formControls, { updateOn: 'blur' });
 

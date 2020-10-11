@@ -14,7 +14,8 @@
 	}
 
 	&__current-level,
-	&__available-cards {
+	&__available-cards,
+	&__trade-cost {
 		width: 96 * $dim-1px;
 
 		::ng-deep .mat-form-field-infix {
@@ -29,6 +30,11 @@
 		mat-icon {
 			cursor: pointer;
 		}
+	}
+
+	&__trade-cost,
+	&__trade-cost-placeholder {
+		width: 72 * $dim-1px;
 	}
 
 	&__available-cards {

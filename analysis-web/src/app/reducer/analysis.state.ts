@@ -33,7 +33,7 @@ export type Section =
 	| 'Placebo'
 	| 'Supreme'
 	| 'Trade';
-export const sections = [
+export const sections: Section[] = [
 	'Potato',
 	'Land',
 	'Ore',
@@ -55,6 +55,7 @@ export interface Researcher {
 export interface ResearcherState {
 	currentLevel: number;
 	availableCards: number;
+	nextTradeCost: string; // only for Trade Researcher
 }
 
 export interface Analysis {

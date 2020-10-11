@@ -17,6 +17,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AnalysisEffect } from './effects/analysis.effect';
 import { AnalysisService } from './service/analysis.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
 	declarations: [AppComponent, ResearcherAnalysisRowComponent],
@@ -24,6 +25,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 		AppRoutingModule,
 		BrowserAnimationsModule,
 		BrowserModule,
+		CommonModule,
 		FlexModule,
 		MatFormFieldModule,
 		MatInputModule,

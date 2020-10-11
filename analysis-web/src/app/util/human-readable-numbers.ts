@@ -12,7 +12,7 @@ export function toHumanReadable(decimal: Decimal) {
 	return num.toString() + suffix;
 }
 
-const unitsMapping = getUnitsMapping();
+export const unitsMapping = getUnitsMapping();
 
 function getUnitsMapping() {
 	const units = ['', 'K', 'M', 'B', 'T'];

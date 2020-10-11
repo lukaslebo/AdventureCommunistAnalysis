@@ -11,6 +11,24 @@
 					researchers, so the cost of buying the cards for science can be
 					factored in.
 				</p>
+				<p>
+					In the section for researchers for comrade trades you can set the cost
+					of your <span [class]="styles('text', 'bold')">next</span> comrade
+					trade to get better accuracy. You would set i.e. "5HH" or simply "HH".
+					This will be used to evaluate how many trades you already got.
+					Otherwise the power in the industry will be used to estimate the
+					number of trades (which is not very accurate).
+				</p>
+				<p>
+					Except for comrade trades the boost of leveling a researcher is
+					evaluated in log with base 2. So leveling a common is always boost 1
+					but multiplies your industry power by 2.
+				</p>
+				<p>
+					Disclaimer: The state of your form below will be saved to your cookies
+					once you start setting values. When you come back to this site you
+					don't have to reapply all your settings.
+				</p>
 			</div>
 		</div>
 		<div
@@ -42,6 +60,12 @@
 			<div fxLayout="row">
 				<div [class]="styles('section-title')">{{ section }} Analysis</div>
 				<div [class]="styles('section-header-lvl')">Level</div>
+				<div
+					*ngIf="section === 'Trade'"
+					[class]="styles('section-header-tradecost')"
+				>
+					Trade Cost
+				</div>
 				<div [class]="styles('section-header-cards')">Available Cards</div>
 				<div [class]="styles('section-header-boost')">Boost</div>
 				<div [class]="styles('section-header-cost')">Cost</div>

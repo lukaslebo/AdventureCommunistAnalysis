@@ -7,6 +7,7 @@ import {
 import {
 	AnalysisMap,
 	AnalysisRootState,
+	ResearcherState,
 	ResearcherStateMap
 } from './analysis.state';
 import { Researchers } from './researcher.state';
@@ -24,9 +25,10 @@ const rankReducer = createReducer(
 	on(cookiesLoaded, (state, { rank }) => rank ?? state)
 );
 
-export const initialResearcherState = {
+export const initialResearcherState: ResearcherState = {
 	currentLevel: 0,
-	availableCards: null
+	availableCards: null,
+	nextTradeCost: null
 };
 const researcherInitialState = Researchers.allResearchers.reduce(
 	(acc, r) => ({

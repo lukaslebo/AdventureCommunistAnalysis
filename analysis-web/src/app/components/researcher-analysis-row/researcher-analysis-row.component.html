@@ -18,6 +18,16 @@
 			<mat-icon (click)="lvlDown()">arrow_circle_down</mat-icon>
 		</div>
 	</mat-form-field>
+	<mat-form-field
+		*ngIf="researcher.modifier === 'Trade' && researcher.rarity !== 'Supreme'"
+		[class]="styles('trade-cost')"
+	>
+		<input matInput [formControl]="formControls.nextTradeCost" type="text" />
+	</mat-form-field>
+	<div
+		*ngIf="researcher.modifier === 'Trade' && researcher.rarity === 'Supreme'"
+		[class]="styles('trade-cost-placeholder')"
+	></div>
 	<mat-form-field [class]="styles('available-cards')">
 		<input matInput [formControl]="formControls.availableCards" type="number" />
 		<div matSuffix fxLayout="row" fxLayoutAlign="start center">

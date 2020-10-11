@@ -38,7 +38,8 @@ export class AnalysisEffect {
 					const decompressedVal = val
 						.replace(/%1/g, ',"availableCards":null')
 						.replace(/%2/g, ',"availableCards":')
-						.replace(/%3/g, '":{"currentLevel":');
+						.replace(/%3/g, '":{"currentLevel":')
+						.replace(/%4/g, ',"nextTradeCost":');
 					researcherStateMap = JSON.parse(decompressedVal);
 				}
 				if (this.cookieService.check('RANK')) {
@@ -61,7 +62,8 @@ export class AnalysisEffect {
 					const compressedValue = JSON.stringify(researcherStateMap)
 						.replace(/,"availableCards":null/g, '%1')
 						.replace(/,"availableCards":/g, '%2')
-						.replace(/":\{"currentLevel":/g, '%3');
+						.replace(/":\{"currentLevel":/g, '%3')
+						.replace(/,"nextTradeCost":/g, '%4');
 					const expires = new Date();
 					expires.setFullYear(expires.getFullYear() + 3);
 					this.cookieService.set(

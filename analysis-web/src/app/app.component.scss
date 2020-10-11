@@ -16,6 +16,12 @@
 		width: 700 * $dim-1px;
 	}
 
+	&__text {
+		&--bold {
+			font-weight: 700;
+		}
+	}
+
 	&__header-title {
 		font-weight: 700;
 		font-size: 24 * $dim-1px;
@@ -34,6 +40,10 @@
 
 	&__section-header-lvl {
 		width: 104 * $dim-1px;
+	}
+
+	&__section-header-tradecost {
+		width: 80 * $dim-1px;
 	}
 
 	&__section-header-cards {
