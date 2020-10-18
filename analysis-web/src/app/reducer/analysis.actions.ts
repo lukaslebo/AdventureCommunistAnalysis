@@ -25,12 +25,19 @@ export const updateAnalysisMap = createAction(
 	props<{ analysisMap: AnalysisMap }>()
 );
 
-export const loadCookies = createAction('[Analysis] loadStateFromCookie');
+export const loadCookies = createAction('[Analysis] loadCookies');
 
-export const cookiesLoaded = createAction(
-	'[Analysis] cookiesLoaded',
+export const loadFromRoute = createAction(
+	'[Analysis] loadFromRoute',
+	props<{ rank: number; encodedState: string }>()
+);
+
+export const stateLoaded = createAction(
+	'[Analysis] stateLoaded',
 	props<{
 		rank: number;
 		researcherStateMap: ResearcherStateMap;
 	}>()
 );
+
+export const copyToClipboard = createAction('[Analysis] copyToClipboard');

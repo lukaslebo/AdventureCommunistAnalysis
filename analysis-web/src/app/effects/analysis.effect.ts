@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
-	cookiesLoaded,
+	copyToClipboard,
 	loadCookies,
+	loadFromRoute,
+	stateLoaded,
 	updateAnalysisMap,
 	updateRank,
 	updateResearcher
 } from '../reducer/analysis.actions';
-import { map, tap, withLatestFrom } from 'rxjs/operators';
+import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AnalysisMap, ResearcherStateMap } from '../reducer/analysis.state';
 import { Researchers } from '../reducer/researcher.state';
 import { select, Store } from '@ngrx/store';
@@ -17,6 +19,10 @@ import {
 } from '../reducer/analysis.reducer';
 import { AnalysisService } from '../service/analysis.service';
 import { CookieService } from 'ngx-cookie-service';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { compressState, decompressState } from '../util/compression-util';
 
 @Injectable()
 export class AnalysisEffect {
@@ -24,7 +30,9 @@ export class AnalysisEffect {
 		private readonly actions: Actions,
 		private readonly store: Store,
 		private readonly analysisService: AnalysisService,
-		private readonly cookieService: CookieService
+		private readonly cookieService: CookieService,
+		private readonly clipboard: Clipboard,
+		private readonly router: Router
 	) {}
 
 	readonly loadCookie$ = createEffect(() =>
@@ -34,18 +42,13 @@ export class AnalysisEffect {
 				let researcherStateMap: ResearcherStateMap;
 				let rank: number;
 				if (this.cookieService.check('GAME_STATE')) {
-					const val = this.cookieService.get('GAME_STATE');
-					const decompressedVal = val
-						.replace(/%1/g, ',"availableCards":null')
-						.replace(/%2/g, ',"availableCards":')
-						.replace(/%3/g, '":{"currentLevel":')
-						.replace(/%4/g, ',"nextTradeCost":');
-					researcherStateMap = JSON.parse(decompressedVal);
+					const gameState = this.cookieService.get('GAME_STATE');
+					researcherStateMap = decompressState(gameState);
 				}
 				if (this.cookieService.check('RANK')) {
 					rank = JSON.parse(this.cookieService.get('RANK'));
 				}
-				return cookiesLoaded({ rank, researcherStateMap });
+				return stateLoaded({ rank, researcherStateMap });
 			})
 		)
 	);
@@ -59,22 +62,18 @@ export class AnalysisEffect {
 					this.store.pipe(select(selectCurrentRank))
 				),
 				tap(([action, researcherStateMap, rank]) => {
-					const compressedValue = JSON.stringify(researcherStateMap)
-						.replace(/,"availableCards":null/g, '%1')
-						.replace(/,"availableCards":/g, '%2')
-						.replace(/":\{"currentLevel":/g, '%3')
-						.replace(/,"nextTradeCost":/g, '%4');
 					const expires = new Date();
 					expires.setFullYear(expires.getFullYear() + 3);
 					this.cookieService.set(
 						'GAME_STATE',
-						compressedValue,
+						compressState(researcherStateMap),
 						expires,
 						'/',
 						document.domain,
 						false,
 						'Lax'
 					);
+
 					this.cookieService.set(
 						'RANK',
 						JSON.stringify(rank),
@@ -93,17 +92,53 @@ export class AnalysisEffect {
 
 	readonly updateAnalysis$ = createEffect(() =>
 		this.actions.pipe(
-			ofType(updateResearcher, cookiesLoaded),
+			ofType(updateResearcher, stateLoaded),
 			withLatestFrom(this.store.pipe(select(selectResearcher))),
 			map(([_, researcherStateMap]) => {
 				const analysisMap = Researchers.allResearchers
 					.map((r) => ({
-						[r.id]: this.analysisService.analyze(r, researcherStateMap)
+						[r.name]: this.analysisService.analyze(r, researcherStateMap)
 					}))
 					.reduce((acc, next) => ({ ...acc, ...next }), <AnalysisMap>{});
 
 				return updateAnalysisMap({ analysisMap });
 			})
 		)
+	);
+
+	readonly loadStateFromRoute$ = createEffect(() =>
+		this.actions.pipe(
+			ofType(loadFromRoute),
+			switchMap(({ rank, encodedState }) =>
+				of(
+					stateLoaded({
+						rank,
+						researcherStateMap: decompressState(encodedState)
+					})
+				)
+			),
+			tap(() => this.router.navigate(['/']))
+		)
+	);
+
+	readonly copyToClipboard$ = createEffect(
+		() =>
+			this.actions.pipe(
+				ofType(copyToClipboard),
+				withLatestFrom(
+					this.store.pipe(select(selectCurrentRank)),
+					this.store.pipe(select(selectResearcher))
+				),
+				tap(([_, rank, researcherStateMap]) => {
+					this.clipboard.copy(
+						window.location.origin +
+							window.location.pathname +
+							`?r=${rank}&s=${encodeURIComponent(
+								compressState(researcherStateMap)
+							)}`
+					);
+				})
+			),
+		{ dispatch: false }
 	);
 }

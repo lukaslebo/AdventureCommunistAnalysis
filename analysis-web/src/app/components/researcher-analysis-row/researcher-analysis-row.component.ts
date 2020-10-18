@@ -15,11 +15,14 @@ import {
 import { FormBuilder, FormControl } from '@angular/forms';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { initialResearcherState } from '../../reducer/analysis.reducer';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { UpdateResearcherProps } from '../../reducer/analysis.actions';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { Decimal } from 'decimal.js';
-import { toHumanReadable } from '../../util/human-readable-numbers';
+import {
+	toHumanReadable,
+	unitsMapping
+} from '../../util/human-readable-numbers';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -77,12 +80,23 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 			.subscribe((researcherState) =>
 				this.formGroup.patchValue(researcherState, { emitEvent: false })
 			);
-		this.formGroup.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() =>
-			this.updated.emit({
-				id: this.researcher.id,
-				researcherState: this.formGroup.getRawValue()
-			})
-		);
+		this.formGroup.valueChanges
+			.pipe(
+				takeUntil(this.destroyed$),
+				map(() => {
+					const val = this.formGroup.getRawValue();
+					if (val.nextTradeCost) {
+						val.nextTradeCost = val.nextTradeCost.toUpperCase();
+					}
+					return val;
+				})
+			)
+			.subscribe((state) =>
+				this.updated.emit({
+					id: this.researcher.name,
+					researcherState: state
+				})
+			);
 	}
 
 	lvlUp() {
@@ -93,6 +107,22 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	lvlDown() {
 		const next = Math.max(this.formControls.currentLevel.value - 1, 0);
 		this.formControls.currentLevel.setValue(next);
+	}
+
+	tradeCostUp() {
+		const unit = this.formControls.nextTradeCost.value?.match(
+			/(?<num>[0-9]*)(?<unit>[a-z]*)/i
+		).groups.unit;
+		const index = unitsMapping.indexOf(unit);
+		this.formControls.nextTradeCost.setValue(unitsMapping[index + 1] ?? null);
+	}
+
+	tradeCostDown() {
+		const unit = this.formControls.nextTradeCost.value?.match(
+			/(?<num>[0-9]*)(?<unit>[a-z]*)/i
+		).groups.unit;
+		const index = unitsMapping.indexOf(unit);
+		this.formControls.nextTradeCost.setValue(unitsMapping[index - 1] ?? null);
 	}
 
 	cardsUp() {
@@ -109,11 +139,12 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 	}
 
 	format(num: string) {
-		return toHumanReadable(new Decimal(num));
+		return num ? toHumanReadable(new Decimal(num)) : '';
 	}
 
 	getCost() {
 		return [this.analysis?.upgradeCost, this.analysis?.upgradeCardCost]
+			.filter((v) => !!v)
 			.map((e) => new Decimal(e))
 			.filter((n) => n.gt(0))
 			.map((n) => toHumanReadable(n))

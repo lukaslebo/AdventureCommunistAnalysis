@@ -3342,6 +3342,11 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+emitter-component@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.1.1.tgz#065e2dbed6959bf470679edabeaf7981d1003ab6"
+  integrity sha1-Bl4tvtaVm/RwZ57avq95gdEAOrY=
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
@@ -5374,6 +5379,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lzutf8@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/lzutf8/-/lzutf8-0.5.6.tgz#8cbdaf573ffb9f0f195f9d2e7ea56c44f8e9d5d6"
+  integrity sha512-nZT9HP+xe9FxhRj0DIHb/7jVeFdIQkOul8ebCYc5bMevmuzZZYbsjwFlg+UfO8GTQMfiGU2Fyt8JXtffeKF0Kg==
+
 magic-string@0.25.7, magic-string@^0.25.0:
   version "0.25.7"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
@@ -5769,6 +5779,13 @@ next-tick@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
+
+ngx-cookie-service@^10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-10.1.1.tgz#4d7f41ba7d788896c59cb68283df3ae9d8ffcd37"
+  integrity sha512-HvBrYHdxMN1NvFJGEIF/8EuAg2fjxj8QwqTv9h6qZGqNLU+lUba8Pb2zRPw1YA+gqKkJawOy5dYNeH0kyPyipw==
+  dependencies:
+    tslib "^2.0.0"
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -7986,6 +8003,13 @@ stream-shift@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
+
+stream@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/stream/-/stream-0.0.2.tgz#7f5363f057f6592c5595f00bc80a27f5cec1f0ef"
+  integrity sha1-f1Nj8Ff2WSxVlfALyAon9c7B8O8=
+  dependencies:
+    emitter-component "^1.1.1"
 
 streamroller@^2.2.4:
   version "2.2.4"

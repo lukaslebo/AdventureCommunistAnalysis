@@ -44,7 +44,10 @@ export const sections: Section[] = [
 ];
 
 export interface Researcher {
-	id: string;
+	id: number;
+	/** short form of the researcher name */
+	name: string;
+	/** full researcher name */
 	researcherName: string;
 	unlockedAtRank: number;
 	industry: Industry;

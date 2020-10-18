@@ -7,7 +7,8 @@
 		"build": "ng build",
 		"build:prod": "ng build --prod --base-href=/AdventureCommunistAnalysis/",
 		"test": "ng test",
-		"lint": "ng lint"
+		"lint": "ng lint",
+		"remove-lockfile": "rm ./node_modules/@angular/compiler-cli/ngcc/__ngcc_lock_file__"
 	},
 	"private": true,
 	"prettier": {
@@ -32,7 +33,10 @@
 		"@ngrx/store-devtools": "^10.0.0",
 		"decimal.js": "^10.2.1",
 		"immer": "^7.0.9",
+		"lzutf8": "^0.5.6",
+		"ngx-cookie-service": "^10.1.1",
 		"rxjs": "^6.6.3",
+		"stream": "^0.0.2",
 		"tslib": "^2.0.0",
 		"zone.js": "~0.10.2"
 	},

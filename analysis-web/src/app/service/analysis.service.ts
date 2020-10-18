@@ -33,7 +33,11 @@ export class AnalysisService {
 			canUpgrade || researcher.rarity === 'Supreme'
 				? this.getBoost(researcher, researcherStateMap)
 				: ZERO;
-		const boostPer1kScience = this.getBoostPer1kScience(researcher, totalUpgradeCost, boost);
+		const boostPer1kScience = this.getBoostPer1kScience(
+			researcher,
+			totalUpgradeCost,
+			boost
+		);
 
 		return {
 			boost: boost.toString(),
@@ -44,7 +48,11 @@ export class AnalysisService {
 		};
 	}
 
-	private getBoostPer1kScience(researcher: Researcher, totalUpgradeCost: Decimal, boost: Decimal) {
+	private getBoostPer1kScience(
+		researcher: Researcher,
+		totalUpgradeCost: Decimal,
+		boost: Decimal
+	) {
 		if (totalUpgradeCost.equals(0)) {
 			return ZERO;
 		}
@@ -63,7 +71,7 @@ export class AnalysisService {
 
 		let power = ONE;
 		for (let researcher of researchers) {
-			const lvl = researcherStateMap[researcher.id].currentLevel ?? 0;
+			const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
 			if (researcher.modifier === 'Speed') {
 				power = power.times(TWO.pow(lvl));
 			} else if (researcher.modifier === 'Power') {
@@ -115,8 +123,10 @@ export class AnalysisService {
 			case 'Chance':
 				return this.getChanceBoost(researcher, researcherStateMap);
 			case 'Discount':
-				// log2(10)
-				return new Decimal('3.32192809489');
+				// Supreme: 5*log2(10), Epic: log2(10)
+				return researcher.rarity === 'Supreme'
+					? new Decimal('16.6096404744')
+					: new Decimal('3.32192809489');
 			case 'Bonus':
 				return TWO.times(
 					this.getCommonCountForIndustry(
@@ -125,7 +135,7 @@ export class AnalysisService {
 					)
 				);
 			case 'SinglePower':
-				return (researcherStateMap[researcher.id].currentLevel ?? 0) == 0
+				return (researcherStateMap[researcher.name].currentLevel ?? 0) == 0
 					? NINE.log(TWO)
 					: ONE;
 		}
@@ -139,7 +149,7 @@ export class AnalysisService {
 			researcherStateMap[
 				Researchers.allResearchers.find(
 					(r) => r.rarity === 'Supreme' && r.modifier === 'Trade'
-				)?.id
+				)?.name
 			]?.currentLevel ?? 0;
 
 		const industries: Industry[] = [
@@ -155,7 +165,7 @@ export class AnalysisService {
 					researcherStateMap[
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
-						)?.id
+						)?.name
 					];
 				const lvl = researcherState?.currentLevel ?? 0;
 				const industryTradeExponent = this.getIndustryPower(
@@ -179,7 +189,7 @@ export class AnalysisService {
 					researcherStateMap[
 						Researchers.allResearchers.find(
 							(r) => r.modifier === 'Trade' && r.industry === industry
-						)?.id
+						)?.name
 					];
 				let lvl = researcherState?.currentLevel ?? 0;
 				if (researcher.industry === industry) lvl++;
@@ -210,7 +220,7 @@ export class AnalysisService {
 					(r.industry === industry || industry == 'All') &&
 					r.rarity === 'Common'
 			)
-			.map((r) => researcherStateMap[r.id].currentLevel)
+			.map((r) => researcherStateMap[r.name].currentLevel)
 			.filter((lvl) => lvl > 0).length;
 	}
 
@@ -247,7 +257,7 @@ export class AnalysisService {
 					r.modifier == 'Bonus' &&
 					(r.industry == industry || r.industry == 'All')
 			)
-			.map((r) => researcherStateMap[r.id].currentLevel)
+			.map((r) => researcherStateMap[r.name].currentLevel)
 			.filter((lvl) => lvl > 0)
 			.reduce((acc, lvl) => acc.times(FOUR.pow(lvl)), TWO);
 	}
@@ -262,7 +272,7 @@ export class AnalysisService {
 					r.modifier === 'Discount' &&
 					(r.industry === industry || r.industry === 'All')
 			)
-			.map((r) => researcherStateMap[r.id].currentLevel ?? 0)
+			.map((r) => researcherStateMap[r.name].currentLevel ?? 0)
 			.reduce((acc, lvl) => acc.times(this.getDiscountFactorFromLvl(lvl)), ONE);
 	}
 
@@ -282,7 +292,7 @@ export class AnalysisService {
 					(r.industry === industry || r.industry === 'All')
 			)
 			.map((r) => {
-				let lvl = researcherStateMap[r.id]?.currentLevel ?? 0;
+				let lvl = researcherStateMap[r.name]?.currentLevel ?? 0;
 				if (simulatePlusOneLvl && (r.industry !== 'All' || industry == 'All')) {
 					lvl++;
 				}
@@ -341,7 +351,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	): Decimal {
-		const lvl = researcherStateMap[researcher.id].currentLevel ?? 0;
+		const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
 		switch (researcher.rarity) {
 			case 'Common':
 				switch (lvl) {
@@ -444,7 +454,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	): Decimal {
-		const lvl = researcherStateMap[researcher.id].currentLevel ?? 0;
+		const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
 		switch (lvl) {
 			case 0:
 				return ONE;
@@ -481,7 +491,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	): Decimal {
-		const availableCards = researcherStateMap[researcher.id].availableCards;
+		const availableCards = researcherStateMap[researcher.name].availableCards;
 		if (availableCards != null) {
 			const requiredCards = this.getRequiredCardsForUpgrade(
 				researcher,
@@ -513,7 +523,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	) {
-		const lvl = researcherStateMap[researcher.id]?.currentLevel ?? 0;
+		const lvl = researcherStateMap[researcher.name]?.currentLevel ?? 0;
 		switch (researcher.rarity) {
 			case 'Common':
 				return lvl < 13;

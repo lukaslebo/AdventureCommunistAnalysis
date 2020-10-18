@@ -43,7 +43,7 @@
 	}
 
 	&__section-header-tradecost {
-		width: 80 * $dim-1px;
+		width: 112 * $dim-1px;
 	}
 
 	&__section-header-cards {
@@ -81,5 +81,10 @@
 		mat-icon {
 			cursor: pointer;
 		}
+	}
+
+	&__copy-button {
+		background-color: #0a2bff;
+		color: white;
 	}
 }

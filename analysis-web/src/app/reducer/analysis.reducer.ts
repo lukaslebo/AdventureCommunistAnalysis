@@ -12,7 +12,7 @@ import {
 } from './analysis.state';
 import { Researchers } from './researcher.state';
 import {
-	cookiesLoaded,
+	stateLoaded,
 	updateAnalysisMap,
 	updateRank,
 	updateResearcher
@@ -22,7 +22,7 @@ import produce from 'immer';
 const rankReducer = createReducer(
 	1,
 	on(updateRank, (_, { rank }) => rank),
-	on(cookiesLoaded, (state, { rank }) => rank ?? state)
+	on(stateLoaded, (state, { rank }) => rank ?? state)
 );
 
 export const initialResearcherState: ResearcherState = {
@@ -33,7 +33,7 @@ export const initialResearcherState: ResearcherState = {
 const researcherInitialState = Researchers.allResearchers.reduce(
 	(acc, r) => ({
 		...acc,
-		[r.id]: initialResearcherState
+		[r.name]: initialResearcherState
 	}),
 	<ResearcherStateMap>{}
 );
@@ -44,7 +44,7 @@ const researcherReducer = createReducer(
 			draft[id] = researcherState;
 		})
 	),
-	on(cookiesLoaded, (state, { researcherStateMap }) => ({
+	on(stateLoaded, (state, { researcherStateMap }) => ({
 		...state,
 		...researcherStateMap
 	}))
@@ -53,7 +53,7 @@ const researcherReducer = createReducer(
 const analysisInitialState = Researchers.allResearchers.reduce(
 	(acc, r) => ({
 		...acc,
-		[r.id]: null
+		[r.name]: null
 	}),
 	<AnalysisMap>{}
 );
@@ -68,7 +68,7 @@ const analysisReducer = createReducer(
 
 const cookieReducer = createReducer(
 	false,
-	on(cookiesLoaded, () => true)
+	on(stateLoaded, () => true)
 );
 
 export const analysisReducerMap: ActionReducerMap<AnalysisRootState> = {

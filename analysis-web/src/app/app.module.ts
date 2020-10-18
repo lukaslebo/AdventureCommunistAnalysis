@@ -18,6 +18,8 @@ import { AnalysisEffect } from './effects/analysis.effect';
 import { AnalysisService } from './service/analysis.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
 	declarations: [AppComponent, ResearcherAnalysisRowComponent],
@@ -26,9 +28,11 @@ import { CommonModule } from '@angular/common';
 		BrowserAnimationsModule,
 		BrowserModule,
 		CommonModule,
+		ClipboardModule,
 		FlexModule,
 		MatFormFieldModule,
 		MatInputModule,
+		MatButtonModule,
 		MatCheckboxModule,
 		MatIconModule,
 		ReactiveFormsModule,

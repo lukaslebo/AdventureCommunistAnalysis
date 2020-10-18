@@ -23,6 +23,10 @@
 		[class]="styles('trade-cost')"
 	>
 		<input matInput [formControl]="formControls.nextTradeCost" type="text" />
+		<div matSuffix fxLayout="row">
+			<mat-icon (click)="tradeCostUp()">arrow_circle_up</mat-icon>
+			<mat-icon (click)="tradeCostDown()">arrow_circle_down</mat-icon>
+		</div>
 	</mat-form-field>
 	<div
 		*ngIf="researcher.modifier === 'Trade' && researcher.rarity === 'Supreme'"

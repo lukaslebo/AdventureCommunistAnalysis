@@ -17,14 +17,17 @@ import {
 } from './reducer/analysis.state';
 import { Researchers } from './reducer/researcher.state';
 import {
+	copyToClipboard,
 	loadCookies,
+	loadFromRoute,
 	updateRank,
 	updateResearcher,
 	UpdateResearcherProps
 } from './reducer/analysis.actions';
 import { FormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { Decimal } from 'decimal.js';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'analysis-app',
@@ -48,9 +51,23 @@ export class AppComponent implements OnDestroy {
 
 	constructor(
 		private readonly store: Store,
-		private readonly cdRef: ChangeDetectorRef
+		private readonly cdRef: ChangeDetectorRef,
+		private readonly route: ActivatedRoute
 	) {
-		this.store.dispatch(loadCookies());
+		this.route.queryParams
+			.pipe(debounceTime(10), take(1), takeUntil(this.destroyed$))
+			.subscribe((params) => {
+				if (params.r || params.s) {
+					this.store.dispatch(
+						loadFromRoute({
+							rank: params.r,
+							encodedState: params.s
+						})
+					);
+				} else {
+					this.store.dispatch(loadCookies());
+				}
+			});
 
 		// prettier-ignore
 		this.researcherBySection = {
@@ -86,7 +103,7 @@ export class AppComponent implements OnDestroy {
 	}
 
 	trackByResearcherId(index: number, el: Researcher) {
-		return el.id;
+		return el.name;
 	}
 
 	rankUp() {
@@ -107,10 +124,14 @@ export class AppComponent implements OnDestroy {
 		const res = researchers.filter((r) => r.unlockedAtRank <= rank);
 		if (!this.sortControl.value) return res;
 		return res.sort((a, b) => {
-			const rA = new Decimal(analysisMap[a.id].boostPer1kScience);
-			const rB = new Decimal(analysisMap[b.id].boostPer1kScience);
+			const rA = new Decimal(analysisMap[a.name].boostPer1kScience);
+			const rB = new Decimal(analysisMap[b.name].boostPer1kScience);
 			return rA.comparedTo(rB) * -1;
 		});
+	}
+
+	copyToClipboard() {
+		this.store.dispatch(copyToClipboard());
 	}
 
 	ngOnDestroy() {

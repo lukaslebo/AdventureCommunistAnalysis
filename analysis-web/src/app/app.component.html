@@ -50,6 +50,13 @@
 				[formControl]="sortControl"
 				>Sort by most valuable Researchers
 			</mat-checkbox>
+			<button
+				mat-button
+				(click)="copyToClipboard()"
+				[class]="styles('copy-button')"
+			>
+				Copy to Clipboard (URL)
+			</button>
 		</div>
 
 		<div
@@ -84,8 +91,8 @@
 				>
 					<researcher-analysis-row
 						[researcher]="researcher"
-						[researcherState]="(researcherStateMap$ | async)[researcher.id]"
-						[analysis]="(analysisMap$ | async)[researcher.id]"
+						[researcherState]="(researcherStateMap$ | async)[researcher.name]"
+						[analysis]="(analysisMap$ | async)[researcher.name]"
 						(updated)="updateResearcherState($event)"
 					></researcher-analysis-row>
 				</div>

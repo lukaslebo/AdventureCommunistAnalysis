@@ -77,7 +77,7 @@ private fun getIndustryBoostAsExponentOfTwo(researcher: Researcher): BigDecimal 
 		val boost = nextPower.divide(power, 3, RoundingMode.HALF_UP).stripTrailingZeros()
 		boost.log(2, 2)
 	}
-	Discount -> BigDecimal(10).log(2, 2)
+	Discount -> if (researcher.rarity === Supreme) BigDecimal(10).log(2, 2).times(BigDecimal(5)) else BigDecimal(10).log(2, 2)
 	Bonus -> researcher.industry.getCommonCountForIndustry() * TWO
 	SinglePower -> if (researcher.getLevel() == 0) NINE else TWO
 }

@@ -1,8 +1,8 @@
 /**
  * BEM - Block Element Modifier helper function
  */
-export function BEM(blockName: String) {
-	return (elementName: String, ...modifier: String[]) => {
+export function BEM(blockName: string) {
+	return (elementName: string, ...modifier: string[]) => {
 		let styleClasses = blockName;
 
 		if (elementName) {
