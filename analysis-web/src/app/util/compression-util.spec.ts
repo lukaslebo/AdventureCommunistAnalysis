@@ -1,6 +1,6 @@
 import { ResearcherStateMap } from '../reducer/analysis.state';
 import { Researchers } from '../reducer/researcher.state';
-import { compressState, decompressState } from './compression-util';
+import {compressState, decompressState} from "./compression-util";
 
 export const testCompression = describe('compression', () => {
 	it('should compress and decompress', () => {

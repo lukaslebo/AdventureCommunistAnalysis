@@ -85,8 +85,10 @@ export class ResearcherAnalysisRowComponent implements OnDestroy {
 				takeUntil(this.destroyed$),
 				map(() => {
 					const val = this.formGroup.getRawValue();
+					const unit = this.formControls.nextTradeCost.value?.match(
+						/(?<num>[0-9]*)(?<unit>[a-z]*)/i).groups.unit
 					if (val.nextTradeCost) {
-						val.nextTradeCost = val.nextTradeCost.toUpperCase();
+						val.nextTradeCost = unit.toUpperCase();
 					}
 					return val;
 				})

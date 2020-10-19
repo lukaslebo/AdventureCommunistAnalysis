@@ -56,12 +56,12 @@ export class AnalysisEffect {
 	readonly storeCookie$ = createEffect(
 		() =>
 			this.actions.pipe(
-				ofType(updateResearcher, updateRank),
+				ofType(updateResearcher, updateRank, stateLoaded),
 				withLatestFrom(
 					this.store.pipe(select(selectResearcher)),
 					this.store.pipe(select(selectCurrentRank))
 				),
-				tap(([action, researcherStateMap, rank]) => {
+				tap(([_, researcherStateMap, rank]) => {
 					const expires = new Date();
 					expires.setFullYear(expires.getFullYear() + 3);
 					this.cookieService.set(
@@ -76,7 +76,7 @@ export class AnalysisEffect {
 
 					this.cookieService.set(
 						'RANK',
-						JSON.stringify(rank),
+						rank?.toString(),
 						expires,
 						'/',
 						document.domain,

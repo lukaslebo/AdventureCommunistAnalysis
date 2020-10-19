@@ -241,9 +241,13 @@ export class AnalysisService {
 			researcher.industry,
 			researcherStateMap
 		);
+		const commonCount = this.getCommonCountForIndustry(
+			researcher.industry,
+			researcherStateMap
+		);
 		const power = ONE.minus(chance).plus(chance.times(multiplier));
 		const nextPower = ONE.minus(chance).plus(nextChance.times(multiplier));
-		const boost = nextPower.div(power);
+		const boost = nextPower.div(power).pow(commonCount);
 		return boost.log(TWO);
 	}
 
