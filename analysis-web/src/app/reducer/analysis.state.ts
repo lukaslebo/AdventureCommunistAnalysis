@@ -58,7 +58,7 @@ export interface Researcher {
 export interface ResearcherState {
 	currentLevel: number;
 	availableCards: number;
-	nextTradeCost: string; // only for Trade Researcher
+	nextTradeCost?: string; // only for Trade Researcher
 }
 
 export interface Analysis {

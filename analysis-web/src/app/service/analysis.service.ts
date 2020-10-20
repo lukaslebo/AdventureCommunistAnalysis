@@ -71,7 +71,7 @@ export class AnalysisService {
 
 		let power = ONE;
 		for (let researcher of researchers) {
-			const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
+			const lvl = researcherStateMap[researcher.name]?.currentLevel ?? 0;
 			if (researcher.modifier === 'Speed') {
 				power = power.times(TWO.pow(lvl));
 			} else if (researcher.modifier === 'Power') {
@@ -135,7 +135,7 @@ export class AnalysisService {
 					)
 				);
 			case 'SinglePower':
-				return (researcherStateMap[researcher.name].currentLevel ?? 0) == 0
+				return (researcherStateMap[researcher.name]?.currentLevel ?? 0) == 0
 					? NINE.log(TWO)
 					: ONE;
 		}
@@ -220,7 +220,7 @@ export class AnalysisService {
 					(r.industry === industry || industry == 'All') &&
 					r.rarity === 'Common'
 			)
-			.map((r) => researcherStateMap[r.name].currentLevel)
+			.map((r) => researcherStateMap[r.name]?.currentLevel ?? 0)
 			.filter((lvl) => lvl > 0).length;
 	}
 
@@ -261,7 +261,7 @@ export class AnalysisService {
 					r.modifier == 'Bonus' &&
 					(r.industry == industry || r.industry == 'All')
 			)
-			.map((r) => researcherStateMap[r.name].currentLevel)
+			.map((r) => researcherStateMap[r.name]?.currentLevel ?? 0)
 			.filter((lvl) => lvl > 0)
 			.reduce((acc, lvl) => acc.times(FOUR.pow(lvl)), TWO);
 	}
@@ -276,7 +276,7 @@ export class AnalysisService {
 					r.modifier === 'Discount' &&
 					(r.industry === industry || r.industry === 'All')
 			)
-			.map((r) => researcherStateMap[r.name].currentLevel ?? 0)
+			.map((r) => researcherStateMap[r.name]?.currentLevel ?? 0)
 			.reduce((acc, lvl) => acc.times(this.getDiscountFactorFromLvl(lvl)), ONE);
 	}
 
@@ -355,7 +355,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	): Decimal {
-		const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
+		const lvl = researcherStateMap[researcher.name]?.currentLevel ?? 0;
 		switch (researcher.rarity) {
 			case 'Common':
 				switch (lvl) {
@@ -458,7 +458,7 @@ export class AnalysisService {
 		researcher: Researcher,
 		researcherStateMap: ResearcherStateMap
 	): Decimal {
-		const lvl = researcherStateMap[researcher.name].currentLevel ?? 0;
+		const lvl = researcherStateMap[researcher.name]?.currentLevel ?? 0;
 		switch (lvl) {
 			case 0:
 				return ONE;
