@@ -149,6 +149,8 @@ function toBase10(numString: string) {
 }
 
 function toBase62(num: number) {
+	if (num === 0) return '0';
+
 	let s = '';
 	while (num > 0) {
 		s = base62Symbols[num % 62] + s;

@@ -15,10 +15,10 @@ describe('compression', () => {
 				availableCards: null,
 				nextTradeCost: null
 			},
-			[Researchers.CommuneOfDoggone.name]: {
+			[Researchers.Salvadorville.name]: {
 				currentLevel: 3,
-				availableCards: null,
-				nextTradeCost: null
+				availableCards: 0,
+				nextTradeCost: 'GG'
 			}
 		};
 
