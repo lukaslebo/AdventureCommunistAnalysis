@@ -5,7 +5,7 @@ import java.lang.Integer.max
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-private val TWO = BigDecimal(2)
+internal val TWO = BigDecimal(2)
 private val NINE = BigDecimal(9)
 
 sealed class Analysis(val researcher: Researcher) {
@@ -77,7 +77,8 @@ private fun getIndustryBoostAsExponentOfTwo(researcher: Researcher): BigDecimal 
 		val boost = nextPower.divide(power, 3, RoundingMode.HALF_UP).stripTrailingZeros()
 		boost.log(2, 2)
 	}
-	Discount -> if (researcher.rarity === Supreme) BigDecimal(10).log(2, 2).times(BigDecimal(5)) else BigDecimal(10).log(2, 2)
+	Discount -> if (researcher.rarity === Supreme) BigDecimal(10).log(2, 2)
+		.times(BigDecimal(5)) else BigDecimal(10).log(2, 2)
 	Bonus -> researcher.industry.getCommonCountForIndustry() * TWO
 	SinglePower -> if (researcher.getLevel() == 0) NINE else TWO
 }
@@ -220,7 +221,24 @@ private fun Industry.getCommonCountForIndustry() =
 		it.key.rarity == Common && (it.key.industry == this || this == All) && value != null && value > 0
 	}.size.toBigDecimal()
 
-private fun Industry.getBonusMultiplierForIndustry() =
+fun Industry.getSinglePowerMultiplierForIndustry() =
+	Researcher.researcherLevels.filter {
+		it.key.modifier == SinglePower && it.key.industry == this
+	}
+		.map { it.value }
+		.filterNotNull()
+		.fold(BigDecimal.ONE) { _, lvl -> NINE.multiply(TWO.pow(lvl - 1)) }
+
+fun Industry.getPowerMultiplierForIndustry() =
+	Researcher.researcherLevels.filter {
+		it.key.modifier == Power && (it.key.industry == this || it.key.industry == All)
+	}
+		.map { it.value }
+		.filterNotNull()
+		.filter { it > 0 }
+		.fold(TWO) { acc, lvl -> acc.multiply(TWO.pow(lvl)) }
+
+fun Industry.getBonusMultiplierForIndustry() =
 	Researcher.researcherLevels.filter {
 		it.key.modifier == Bonus && (it.key.industry == this || it.key.industry == All)
 	}
@@ -229,7 +247,7 @@ private fun Industry.getBonusMultiplierForIndustry() =
 		.filter { it > 0 }
 		.fold(BigDecimal(2)) { acc, lvl -> acc.multiply(BigDecimal(4).pow(lvl)) }
 
-private fun Industry.getChanceForIndustry(simulatePlusOneLvl: Boolean = false) =
+fun Industry.getChanceForIndustry(simulatePlusOneLvl: Boolean = false) =
 	Researcher.researcherLevels.filter {
 		it.key.modifier == Chance && (it.key.industry == this || it.key.industry == All)
 	}
