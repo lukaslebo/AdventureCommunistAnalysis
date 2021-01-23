@@ -9,6 +9,8 @@ const val devPath = "src/main/resources/"
 
 private val LOG = KotlinLogging.logger {}
 private val props: Properties = Properties()
+private val researcherLevels = HashMap<Researcher, Int?>()
+private val availableCards = HashMap<Researcher, Int?>()
 
 fun loadGameState(devMode: Boolean = false): Boolean {
 	try {
@@ -18,6 +20,7 @@ fun loadGameState(devMode: Boolean = false): Boolean {
 		}
 		val fis = FileInputStream(gameStateProps)
 		props.load(fis)
+		parseProps()
 		LOG.info { "Loaded game state from \"$gameStateFileName\"" }
 		return true
 	} catch (e: Throwable) {
@@ -26,20 +29,27 @@ fun loadGameState(devMode: Boolean = false): Boolean {
 	}
 }
 
-fun getResearcherLevels(): Map<Researcher, Int?> {
-	val researcherLevels = HashMap<Researcher, Int?>()
+fun parseProps() {
 	Researcher.values().forEach {
-		val lvl = props.getProperty(it.name)?.toIntOrNull()
-		researcherLevels[it] = lvl
+		val config = props.getProperty(it.name)
+		if (config?.contains(';') == true) {
+			val splits = config.split(';').map { split -> split.trim() }
+			val lvl = splits.first().toIntOrNull()
+			val cards = if (splits.size > 1) splits[1].toIntOrNull() else null
+			researcherLevels[it] = lvl
+			availableCards[it] = cards
+		} else {
+			val lvl = props.getProperty(it.name)?.toIntOrNull()
+			researcherLevels[it] = lvl
+		}
 	}
+
+}
+
+fun getResearcherLevels(): Map<Researcher, Int?> {
 	return researcherLevels
 }
 
 fun getAvailableCards(): Map<Researcher, Int?> {
-	val availableCards = HashMap<Researcher, Int?>()
-	Researcher.values().forEach {
-		val cards = props.getProperty("AvailableCards.${it.name}")?.toIntOrNull()
-		availableCards[it] = cards
-	}
 	return availableCards
 }

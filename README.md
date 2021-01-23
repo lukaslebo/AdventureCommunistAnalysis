@@ -27,8 +27,5 @@ Update the `game-state.properties` file according to your game state
   science. If you set the available cards for a researcher the cost
   to buy his cards for the next upgrade are factored in.
 
-  Syntax: `AvailableCards.<ResearcherName> = <Available Cards>`  
-   Example: `AvailableCards.AlfStark = 2`
-
   If you are not interested in setting the available cards you can
   either delete the lines or comment them out (use `#`).
